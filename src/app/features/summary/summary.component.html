@@ -1,0 +1,8 @@
+<section class="summary">
+@if(summary;as item){
+  <span class="mark" aria-hidden="true">✦</span><p class="eyebrow">Break complete</p><h1>A little space, just for you.</h1>
+  <p class="date">{{item.completedAt|date:'medium'}}</p>
+  <div class="facts"><div><strong>{{duration(item.durationMs)}}</strong><span>active play</span></div><div><strong>{{item.puzzleCount}}</strong><span>puzzles noticed</span></div><div><strong>{{item.games.length}}</strong><span>worlds visited</span></div></div>
+  <p class="worlds">{{names(item.games)}}</p><div class="actions"><a tuiButton routerLink="/">Done</a><a tuiButton appearance="secondary" routerLink="/">Take another break</a></div>
+}@else{<h1>Your next little break is waiting.</h1><a tuiButton routerLink="/">Go home</a>}
+</section>
