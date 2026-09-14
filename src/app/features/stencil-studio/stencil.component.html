@@ -1,0 +1,11 @@
+<section class="game-layout">
+  <div class="instructions"><p class="eyebrow">Stencil Studio · {{fixture().difficulty}}</p><h2>Layer the postcard.</h2><p>Match the small target by choosing a stencil, turning it, and applying its colored pattern. New ink paints over old ink.</p>
+    <div class="target-wrap"><span>Target postcard</span><div class="target" role="img" aria-label="Target postcard pattern">@for(index of indices;track index){<i [class]="fixture().target[index]"></i>}</div></div>
+  </div>
+  <div class="play-area">
+    <div class="canvas" role="img" aria-label="Your postcard canvas">@for(index of indices;track index){<i [class]="state().canvas[index]" [class.preview]="preview().includes(index)"></i>}</div>
+    <div class="tools" role="group" aria-label="Stencil tools">@for(tool of fixture().tools;track tool.id;let index=$index){<button type="button" [class.selected]="state().selected===index" [attr.aria-pressed]="state().selected===index" (click)="select(index)"><span [class]="tool.ink"></span>{{tool.name}}</button>}</div>
+    <p class="message" aria-live="polite">{{state().message}}</p>
+    <div class="actions"><button tuiButton appearance="secondary" type="button" (click)="rotate()">Rotate 90°</button><button tuiButton type="button" (click)="apply()" [disabled]="state().solved">Apply</button><button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().history.length===0">Undo</button><button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button><button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button></div>
+  </div>
+</section>
