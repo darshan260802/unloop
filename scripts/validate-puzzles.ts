@@ -1,59 +1,4 @@
-import {POCKET_FIXTURES,checkPocket,createPocketState,extendPath} from '../src/app/features/pocket-post/pocket-post.engine';
-import {STENCIL_FIXTURES,applyStencil,createStencilState} from '../src/app/features/stencil-studio/stencil.engine';
-import {HARBOUR_FIXTURES,createHarbourState,launchBoat,routedDock} from '../src/app/features/little-harbour/harbour.engine';
-import {ORBIT_FIXTURES,createOrbitState,isOrbitSolved,rotateRing} from '../src/app/features/orbit-garden/orbit.engine';
-
 function assert(condition:boolean,message:string):asserts condition{if(!condition)throw new Error(message)}
-function unique(ids:readonly string[],group:string):void{assert(new Set(ids).size===ids.length,`${group} contains duplicate fixture IDs`)}
-
-unique(POCKET_FIXTURES.map((fixture)=>fixture.id),'Pocket Post');
-for(const fixture of POCKET_FIXTURES){
-  let state=createPocketState(fixture);
-  for(const point of fixture.solution.slice(1))state=extendPath(fixture,state,point);
-  state=checkPocket(fixture,state);
-  assert(state.solved,`${fixture.id} solution did not deliver every parcel`);
-}
-
-unique(STENCIL_FIXTURES.map((fixture)=>fixture.id),'Stencil Studio');
-for(const fixture of STENCIL_FIXTURES){
-  let state=createStencilState();
-  for(const action of fixture.solution){
-    state={...state,selected:action.tool,rotation:action.rotation};
-    state=applyStencil(fixture,state);
-  }
-  assert(state.solved,`${fixture.id} solution did not match its target card`);
-  assert(fixture.target.some((ink)=>ink!=='blank'),`${fixture.id} generated a blank target card`);
-}
-
-unique(HARBOUR_FIXTURES.map((fixture)=>fixture.id),'Little Harbour');
-for(const fixture of HARBOUR_FIXTURES){
-  let state=createHarbourState(fixture);
-  while(state.queue.length){
-    const boat=state.queue[0]!;
-    state={...state,junctions:boat.route};
-    assert(routedDock(fixture,state.junctions)===boat.dock,`${fixture.id} known route points to the wrong dock`);
-    const before=state.queue.length;
-    state=launchBoat(fixture,state);
-    assert(state.queue.length===before-1,`${fixture.id} could not deliver ${boat.id}`);
-  }
-  assert(state.solved,`${fixture.id} did not finish after its queue was delivered`);
-}
-
-unique(ORBIT_FIXTURES.map((fixture)=>fixture.id),'Orbit Garden');
-for(const fixture of ORBIT_FIXTURES){
-  let state=createOrbitState(fixture);
-  for(let ring=0;ring<3;ring++){
-    state={...state,selected:ring};
-    let turns=0;
-    while(state.offsets[ring]!==fixture.target[ring]&&turns<8){state=rotateRing(fixture,state,1);turns++}
-    assert(turns<8,`${fixture.id} ring ${ring+1} is unreachable`);
-  }
-  assert(state.solved&&isOrbitSolved(fixture,state.offsets),`${fixture.id} did not water every ring`);
-}
-
-const total=POCKET_FIXTURES.length+STENCIL_FIXTURES.length+HARBOUR_FIXTURES.length+ORBIT_FIXTURES.length;
-console.log(`Validated ${total} playable fixtures across four games.`);
-
 import {createTrail,trailMove,trailSolved,trailHint} from '../src/app/features/number-trail/number-trail.engine';
 for(let seed=1;seed<=64;seed++){
   for(const standard of [false,true]){
@@ -102,3 +47,20 @@ for(let seed=0;seed<128;seed++)for(const standard of [false,true]){
   assert(puzzle.initial.every((value,i)=>{let port=value;for(let turn=0;turn<4;turn++){if(port===puzzle.solution[i])return true;port=rotatePorts(port)}return false}),'Circuit has unreachable tile');
 }
 console.log('Validated 256 Circuit networks.');
+
+import {TRAIL} from '../src/app/features/number-trail/number-trail.engine';
+import {PICROSS} from '../src/app/features/picross/picross.engine';
+import {CARGO} from '../src/app/features/cargo-sort/cargo-sort.engine';
+import {CIRCUIT} from '../src/app/features/circuit/circuit.engine';
+import {freshPuzzle,puzzleFingerprint} from '../src/app/features/puzzles/fresh-puzzle';
+for(const spec of [TRAIL,PICROSS,CARGO,CIRCUIT]){
+  const fingerprints=new Set<string>();
+  for(let i=0;i<32;i++){
+    const {seed,puzzle}=freshPuzzle(spec,false);
+    const fingerprint=puzzleFingerprint(spec,puzzle);
+    assert(!fingerprints.has(fingerprint),spec.title+' repeated a fresh board');
+    fingerprints.add(fingerprint);
+    assert(puzzleFingerprint(spec,spec.create(seed,false))===fingerprint,spec.title+' seed is not reproducible');
+  }
+}
+console.log('Fresh-board generation: 32 distinct starts per game; seeded reloads reproduce exactly.');

@@ -1,6 +1,7 @@
 import {Component,computed,effect,inject,input,signal,untracked} from '@angular/core';
 import {SessionService} from '../../core/session.service';
 import {connected,portNames} from '../circuit/circuit.engine';
+import {freshPuzzle} from './fresh-puzzle';
 import {Puzzle,PuzzleSpec} from './puzzle.model';
 
 @Component({selector:'app-puzzle-board',templateUrl:'./puzzle-board.component.html',styleUrl:'./puzzle-board.component.less'})
@@ -31,13 +32,11 @@ export class PuzzleBoardComponent {
       if(key===this.activeKey)return;
       this.activeKey=key;
       untracked(()=>{
-        const match=current.puzzleId?.match(new RegExp('^'+spec.kind+'-v1-(\\d+)-(0|1)$'));
-        let seed=0;for(const char of current.id)seed=(Math.imul(seed,31)+char.charCodeAt(0))>>>0;
-        seed=(seed+round)>>>0;
+        const match=current.puzzleId?.match(new RegExp('^'+spec.kind+'-v2-(\\d+)-(0|1)$'));
         const standard=match?match[2]==='1':this.session.difficulty()==='standard';
-        if(match)seed=Number(match[1]);
-        const id=spec.kind+'-v1-'+seed+'-'+(standard?1:0);
-        const puzzle=spec.create(seed,standard);
+        const fresh=match?{seed:Number(match[1]),puzzle:spec.create(Number(match[1]),standard)}:freshPuzzle(spec,standard);
+        const {seed,puzzle}=fresh;
+        const id=spec.kind+'-v2-'+seed+'-'+(standard?1:0);
         this.puzzle.set(puzzle);this.values.set([...puzzle.initial]);this.history.set([]);
         this.selected.set(-1);this.locks.set(new Set());this.mode.set(1);this.hinted.set(-1);this.message.set(spec.tip);
         this.saveKey='unloop:puzzle:'+current.id+':'+spec.kind;

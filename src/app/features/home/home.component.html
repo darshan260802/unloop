@@ -10,7 +10,7 @@
     <div class="hero-copy">
       <p class="eyebrow">A small reset, played your way</p>
       <h1>Give your mind somewhere else to go.</h1>
-      <p class="lede">Choose a gentle miniature puzzle. No scores, streaks, lives, or pressure—just five quiet minutes of full attention.</p>
+      <p class="lede">Four games that give your attention somewhere to land. Plan a route, decode a pattern, untangle cargo, or connect a circuit.</p>
       <div class="duration" role="group" aria-label="Break duration">
         <button type="button" [class.selected]="duration() === 5" (click)="duration.set(5)" [attr.aria-pressed]="duration() === 5">5 min</button>
         <button type="button" [class.selected]="duration() === 10" (click)="duration.set(10)" [attr.aria-pressed]="duration() === 10">10 min</button>
@@ -20,19 +20,26 @@
     </div>
     <div class="hero-art" aria-hidden="true">
       <div class="sun"></div><div class="hill hill-one"></div><div class="hill hill-two"></div>
-      <div class="orbit"><span>✿</span><span>✦</span><span>⌂</span></div><div class="tiny-path"></div>
+      <div class="orbit"><span>1 → 2</span><span>▦</span><span>ϟ</span></div><div class="tiny-path"></div>
     </div>
   </div>
   <div class="section-heading">
-    <div><p class="eyebrow">Or choose a world</p><h2>Four ways to gently focus</h2></div>
-    <p>Each game begins with a tiny example and stays easy to leave.</p>
+    <div><p class="eyebrow">Choose your challenge</p><h2>Give your brain something good to do</h2></div>
+    <p>Fresh layouts every break. Clear rules, useful hints, and room to think.</p>
   </div>
   <div class="game-grid">
     @for (game of games; track game.id) {
       <button class="game-card" [class]="game.accent" type="button" (click)="start(game.id)">
-        <div class="miniature" aria-hidden="true"><span>{{game.symbol}}</span><i></i><b></b></div>
+        <div class="miniature" aria-hidden="true">
+          @switch(game.id){
+            @case('pocket-post'){<div class="preview trail-preview"><em>1</em><em>━</em><em>┓</em><em>┏</em><em>2</em><em>┛</em><em>┗</em><em>━</em><em>3</em></div>}
+            @case('stencil-studio'){<div class="preview picross-preview"><em></em><em class="paint"></em><em></em><em class="paint"></em><em class="paint"></em><em class="paint"></em><em></em><em class="paint"></em><em></em></div>}
+            @case('little-harbour'){<div class="cargo-preview"><em>●<br>▲<br>◆</em><em>▲<br>◆<br>●</em><em>◆<br>●<br>▲</em></div>}
+            @case('orbit-garden'){<div class="preview circuit-preview"><em>┏</em><em>┳</em><em>┓</em><em>┣</em><em>ϟ</em><em>┫</em><em>┗</em><em>┻</em><em>┛</em></div>}
+          }
+        </div>
         <span class="eyebrow">{{game.eyebrow}}</span><strong>{{game.name}}</strong><span>{{game.description}}</span>
-        <span class="card-action">Enter world <span aria-hidden="true">→</span></span>
+        <span class="card-action">Play now <span aria-hidden="true">→</span></span>
       </button>
     }
   </div>

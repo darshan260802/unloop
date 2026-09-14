@@ -15,10 +15,10 @@ export class SessionService{
   readonly remainingMs=computed(()=>{const value=this.current();return value?Math.max(0,value.durationMinutes*60_000-value.activeMs):0});
   readonly difficulty=computed<Difficulty>(()=>!this.storage.preferences().gentleOnly&&(this.current()?.unassistedStreak??0)>=3?'standard':'gentle');
   readonly hasResume=computed(()=>this.current()!==null&&this.current()?.phase!=='finished');
-  constructor(){const timer=window.setInterval(()=>this.tick(),1000);const onVisibility=():void=>{if(document.hidden&&this.current()?.phase==='playing')this.pause()};document.addEventListener('visibilitychange',onVisibility);this.destroyRef.onDestroy(()=>{window.clearInterval(timer);document.removeEventListener('visibilitychange',onVisibility)})}
+  constructor(){const timer=window.setInterval(()=>this.tick(),1000);const onVisibility=():void=>{if(document.hidden&&(this.current()?.phase==='playing'||this.current()?.phase==='overtime'))this.pause()};document.addEventListener('visibilitychange',onVisibility);this.destroyRef.onDestroy(()=>{window.clearInterval(timer);document.removeEventListener('visibilitychange',onVisibility)})}
   start(choice:SessionChoice,durationMinutes:5|10):void{const queue=choice==='random'?shuffle(IDS):[choice];this.set({version:1,id:crypto.randomUUID(),choice,durationMinutes,queue,currentGame:queue[0]!,phase:'playing',activeMs:0,puzzleCount:0,unassistedStreak:0,assistedThisPuzzle:false,startedAt:new Date().toISOString(),puzzleId:null});this.storage.updatePreferences({durationMinutes})}
-  pause():void{if(this.current()?.phase==='playing')this.patch({phase:'paused'})}
-  resume():void{if(this.current()?.phase==='paused')this.patch({phase:'playing'})}
+  pause():void{if(this.current()?.phase==='playing'||this.current()?.phase==='overtime')this.patch({phase:'paused'})}
+  resume():void{if(this.current()?.phase==='paused')this.patch({phase:this.remainingMs()===0?'overtime':'playing'})}
   continueCurrent():void{if(this.current()?.phase==='limit')this.patch({phase:'overtime'})}
   markAssisted():void{this.patch({assistedThisPuzzle:true})}
   setPuzzle(id:string):void{if(this.current()?.puzzleId!==id)this.patch({puzzleId:id})}

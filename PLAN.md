@@ -91,3 +91,10 @@ Read AGENTS.md and PLAN.md, inspect git state, resume first incomplete checkpoin
 - Added `validate:puzzles` and made CI run every known solution through all 48 shipped fixtures before the production build.
 - Verification: all 48 fixture checks and `bun run build` passed in GitHub Actions on commit `edec360` (run 34878558227).
 - Per implementation direction, broader unit/e2e/axe suites and device screenshot review remain outside this pass; Checkpoint 9 remains open.
+
+### 2026-09-14 — four new games, superseding the previous game rules
+- User clarified: replace the existing games completely, not redesign them.
+- Shipped Number Trail, Picross, Cargo Sort and Circuit in four independent commits; production CI passed each.
+- Retired the old game engines/components. Retained internal GameId strings for saved preference and URL compatibility.
+- Added procedural fresh starts, persistent recent-board avoidance, repeatable seeded reloads, meaningful hints, undo/reset, new home previews and dialog focus trapping.
+- See docs/NEW_GAMES.md for game rules, research references, generator constraints, verification and remaining device/playtesting limitations.

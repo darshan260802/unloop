@@ -68,6 +68,7 @@ export class StorageService {
     }
   }
   clear(): void {
+    try{for(const kind of ['trail','picross','cargo','circuit'])localStorage.removeItem('unloop:recent-boards:v2:'+kind)}catch{/* Storage is optional. */}
     this.preferences.set(DEFAULT_PREFERENCES);
     this.active.set(null);
     this.history.set([]);

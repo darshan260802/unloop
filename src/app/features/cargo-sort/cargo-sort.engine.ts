@@ -1,4 +1,4 @@
-import {Hint,Move,Puzzle,PuzzleSpec} from '../puzzles/puzzle.model';
+import {Hint,Move,Puzzle,PuzzleSpec,random} from '../puzzles/puzzle.model';
 
 interface CargoFixture {readonly colors:number;readonly initial:readonly number[];readonly moves:readonly (readonly number[])[]}
 const FIXTURES:readonly CargoFixture[]=[{"colors":3,"initial":[1,1,3,1,2,1,2,2,3,3,3,2,0,0,0,0,0,0,0,0],"moves":[[0,3],[0,4],[3,0],[1,3],[1,3],[0,1],[0,1],[2,3],[1,0],[1,0],[1,0],[1,3],[4,2]]},{"colors":3,"initial":[2,1,1,3,3,3,1,2,2,2,1,3,0,0,0,0,0,0,0,0],"moves":[[0,3],[2,3],[0,2],[0,4],[1,0],[1,4],[1,3],[1,3],[2,4],[2,4],[0,2],[0,2]]},{"colors":3,"initial":[2,3,3,2,3,1,3,2,1,2,1,1,0,0,0,0,0,0,0,0],"moves":[[0,3],[1,3],[0,1],[0,4],[0,3],[1,4],[1,4],[2,1],[2,1],[2,3],[1,2],[1,2],[1,2],[1,4]]},{"colors":3,"initial":[3,3,2,3,2,1,3,2,1,1,2,1,0,0,0,0,0,0,0,0],"moves":[[0,3],[1,0],[1,3],[2,1],[0,2],[0,4],[0,3],[0,3],[2,4],[2,4],[1,2],[1,2],[1,4]]},{"colors":3,"initial":[3,2,1,3,2,2,3,1,3,1,1,2,0,0,0,0,0,0,0,0],"moves":[[0,3],[1,0],[1,3],[2,1],[0,2],[0,4],[0,1],[0,3],[2,4],[2,4],[2,4],[2,3]]},{"colors":3,"initial":[2,3,1,3,1,2,3,2,3,1,1,2,0,0,0,0,0,0,0,0],"moves":[[0,3],[0,4],[0,3],[1,0],[1,3],[0,1],[0,1],[2,0],[1,0],[1,0],[1,0],[1,2],[2,4],[2,4],[2,4],[2,3]]},{"colors":3,"initial":[1,1,3,3,2,3,2,2,2,1,1,3,0,0,0,0,0,0,0,0],"moves":[[0,3],[0,3],[2,3],[0,2],[1,4],[1,4],[1,3],[1,4],[2,0],[2,0],[2,0],[2,4]]},{"colors":3,"initial":[3,2,1,2,3,3,1,2,2,1,1,3,0,0,0,0,0,0,0,0],"moves":[[0,3],[1,3],[0,1],[0,3],[2,0],[1,2],[1,4],[0,1],[0,1],[2,4],[2,4],[2,4],[2,3]]},{"colors":3,"initial":[3,1,2,3,1,1,3,2,2,3,1,2,0,0,0,0,0,0,0,0],"moves":[[0,3],[1,0],[1,3],[0,4],[0,4],[0,1],[0,3],[2,4],[1,2],[2,0],[2,0],[0,1],[0,1],[2,3],[2,4]]},{"colors":3,"initial":[2,2,1,3,1,3,2,3,2,1,3,1,0,0,0,0,0,0,0,0],"moves":[[0,3],[1,3],[2,0],[2,3],[0,2],[0,2],[0,1],[1,4],[1,0],[1,3],[2,1],[2,1],[2,1],[2,0],[4,0]]},{"colors":3,"initial":[2,2,1,1,3,1,3,2,3,3,2,1,0,0,0,0,0,0,0,0],"moves":[[0,3],[0,3],[1,0],[2,3],[0,2],[1,4],[1,3],[1,4],[2,0],[2,0],[2,4],[2,4]]},{"colors":3,"initial":[2,2,3,2,3,3,1,1,1,3,2,1,0,0,0,0,0,0,0,0],"moves":[[0,3],[0,4],[3,0],[1,3],[1,3],[2,3],[0,2],[4,1],[2,0],[2,0],[1,2],[1,2],[2,4],[2,1],[2,1],[1,4],[2,3],[1,4],[1,4]]},{"colors":4,"initial":[3,2,4,2,2,1,1,4,4,1,3,2,3,3,1,4,0,0,0,0,0,0,0,0],"moves":[[0,4],[1,0],[2,4],[0,5],[0,5],[0,4],[0,2],[3,5],[1,3],[1,0],[1,4],[3,0],[3,0],[2,3],[2,3],[0,2],[0,2],[2,1],[2,0],[2,0],[0,1],[2,5],[0,1],[0,1]]},{"colors":4,"initial":[2,4,4,2,4,3,1,1,2,1,1,3,3,2,4,3,0,0,0,0,0,0,0,0],"moves":[[0,4],[0,5],[0,5],[0,4],[1,0],[1,0],[2,1],[0,2],[3,1],[2,0],[2,0],[2,0],[2,4],[3,5],[3,4],[1,3],[1,3],[1,3],[1,5]]},{"colors":4,"initial":[4,2,1,1,3,4,4,2,1,4,3,2,1,2,3,3,0,0,0,0,0,0,0,0],"moves":[[0,4],[0,4],[1,0],[2,0],[3,2],[0,5],[0,5],[0,5],[0,1],[2,3],[1,0],[1,0],[1,0],[1,2],[3,1],[2,1],[2,1],[0,2],[0,2],[1,3],[2,0],[2,0],[2,0],[2,4],[3,1],[3,1],[3,5],[3,4]]},{"colors":4,"initial":[1,3,1,4,1,3,2,2,4,2,4,4,1,3,2,3,0,0,0,0,0,0,0,0],"moves":[[0,4],[2,4],[2,4],[1,2],[1,2],[3,1],[2,3],[0,5],[0,1],[0,5],[3,2],[1,0],[1,0],[1,0],[1,5],[2,3],[2,1],[2,1],[2,4],[3,1],[3,1],[0,3],[0,3],[3,2],[3,0],[3,0],[0,2],[3,5],[0,2],[0,2]]},{"colors":4,"initial":[2,2,3,4,1,2,1,3,1,4,4,1,4,3,3,2,0,0,0,0,0,0,0,0],"moves":[[0,4],[1,0],[2,1],[2,4],[2,4],[1,2],[1,2],[3,1],[0,3],[0,5],[0,1],[3,5],[1,0],[1,0],[1,0],[1,2],[3,5],[3,5],[3,4]]},{"colors":4,"initial":[2,4,1,4,2,4,3,1,1,3,2,2,3,4,1,3,0,0,0,0,0,0,0,0],"moves":[[0,4],[1,0],[3,1],[0,3],[0,5],[0,4],[2,0],[2,0],[1,2],[1,2],[1,4],[0,1],[3,5],[0,1],[0,1],[3,5],[3,4],[2,3],[2,3],[2,3],[2,5]]},{"colors":4,"initial":[1,1,2,4,3,1,2,3,4,4,3,3,1,2,4,2,0,0,0,0,0,0,0,0],"moves":[[0,4],[3,0],[3,4],[0,3],[0,3],[1,5],[2,5],[2,5],[2,4],[2,4],[3,1],[1,2],[1,2],[0,1],[0,1],[2,3],[1,0],[1,0],[1,0],[1,5],[3,2],[3,2],[3,2],[3,0]]},{"colors":4,"initial":[1,4,2,3,1,1,3,4,2,2,1,4,2,4,3,3,0,0,0,0,0,0,0,0],"moves":[[0,4],[3,4],[3,4],[1,3],[1,4],[2,3],[1,2],[0,5],[2,1],[2,1],[3,0],[3,0],[5,2],[0,3],[0,3],[0,5],[0,1],[3,5],[3,5],[3,5],[3,2]]},{"colors":4,"initial":[2,3,1,1,3,3,1,4,4,2,3,2,1,2,4,4,0,0,0,0,0,0,0,0],"moves":[[0,4],[0,4],[0,5],[2,0],[2,5],[0,2],[0,2],[1,0],[1,4],[1,5],[1,5],[3,0],[3,0],[2,3],[2,3],[2,1],[0,2],[3,1],[0,2],[0,2],[1,3],[3,0],[3,0],[1,0],[3,0],[3,4]]},{"colors":4,"initial":[1,3,1,1,3,4,3,4,2,2,1,2,4,4,3,2,0,0,0,0,0,0,0,0],"moves":[[0,4],[0,4],[0,5],[0,4],[1,0],[1,5],[0,1],[2,0],[2,4],[0,2],[3,2],[3,5],[1,3],[1,3],[1,5]]},{"colors":4,"initial":[4,3,1,4,2,2,2,1,4,1,4,2,3,1,3,3,0,0,0,0,0,0,0,0],"moves":[[0,4],[1,0],[2,1],[2,4],[0,2],[0,2],[3,0],[3,0],[2,3],[2,3],[0,5],[0,5],[0,5],[0,4],[3,2],[3,2],[2,0],[2,0],[0,3],[2,0],[0,3],[2,4],[3,0],[3,0],[3,0],[3,5]]},{"colors":4,"initial":[4,3,4,1,1,1,2,2,2,3,4,2,3,4,3,1,0,0,0,0,0,0,0,0],"moves":[[0,4],[3,4],[0,5],[0,3],[0,5],[1,0],[1,0],[1,4],[1,4],[2,0],[2,5],[3,2],[3,2],[3,5],[2,3],[2,3],[2,3],[2,0]]}];
@@ -17,13 +17,27 @@ export function cargoTransfer(values:readonly number[],from:number,to:number):re
   piles[from]!.pop();piles[to]!.push(color);
   return piles.flatMap(pile=>[...pile,...Array<number>(CAPACITY-pile.length).fill(0)]);
 }
+/** New shuffled cargo on every seed, accepted only after the solver finds a route. */
 export function createCargo(seed:number,standard:boolean):Puzzle{
-  const pool=FIXTURES.filter(fixture=>fixture.colors===(standard?4:3)),fixture=pool[seed%pool.length]!;
-  const count=fixture.initial.length/CAPACITY,shift=Math.floor(seed/12)%count;
+  const colors=standard?4:3,rng=random(seed);
+  for(let attempt=0;attempt<12;attempt++){
+    const deck=Array.from({length:colors*4},(_,i)=>Math.floor(i/4)+1);
+    for(let i=deck.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[deck[i],deck[j]]=[deck[j]!,deck[i]!]}
+    if(stacks(deck).some(stack=>new Set(stack).size===1))continue;
+    const initial=[...deck,...Array<number>(8).fill(0)];
+    const route=cargoSearch(initial);
+    if(!route||route.length<10)continue;
+    let solution:readonly number[]=initial;
+    for(const move of route)solution=cargoTransfer(solution,move[0]!,move[1]!)!;
+    return{size:colors+2,initial,solution,clues:route};
+  }
+  // Bounded generation fallback: a verified layout, with symbol and bay permutation.
+  const pool=FIXTURES.filter(fixture=>fixture.colors===colors),fixture=pool[seed%pool.length]!;
+  const count=colors+2,shift=Math.floor(seed/12)%count;
   const initial=Array<number>(fixture.initial.length).fill(0);
-  for(let pile=0;pile<count;pile++)for(let slot=0;slot<CAPACITY;slot++){
-    const value=fixture.initial[pile*CAPACITY+slot]!;
-    initial[((pile+shift)%count)*CAPACITY+slot]=value?((value-1+Math.floor(seed/72))%fixture.colors)+1:0;
+  for(let pile=0;pile<count;pile++)for(let slot=0;slot<4;slot++){
+    const value=fixture.initial[pile*4+slot]!;
+    initial[((pile+shift)%count)*4+slot]=value?((value-1+Math.floor(seed/72))%colors)+1:0;
   }
   const moves=fixture.moves.map(move=>[(move[0]!+shift)%count,(move[1]!+shift)%count]);
   let solution:readonly number[]=initial;

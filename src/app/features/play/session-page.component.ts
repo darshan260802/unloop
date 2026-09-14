@@ -1,3 +1,4 @@
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {Component,effect,inject,signal} from '@angular/core';
 import {ActivatedRoute,Router} from '@angular/router';
 import {TuiButton} from '@taiga-ui/core';
@@ -11,7 +12,7 @@ import {PicrossComponent} from '../picross/picross.component';
 
 const isChoice=(value:string|null):value is SessionChoice=>value==='random'||GAME_CARDS.some((game)=>game.id===value);
 
-@Component({selector:'app-session-page',imports:[TuiButton,NumberTrailComponent,PicrossComponent,CargoSortComponent,CircuitComponent],styleUrl:'./session-page.component.less',templateUrl:'./session-page.component.html'})
+@Component({selector:'app-session-page',imports:[CdkTrapFocus,TuiButton,NumberTrailComponent,PicrossComponent,CargoSortComponent,CircuitComponent],styleUrl:'./session-page.component.less',templateUrl:'./session-page.component.html'})
 export class SessionPageComponent{
   protected readonly session=inject(SessionService);protected readonly storage=inject(StorageService);
   private readonly router=inject(Router);private readonly route=inject(ActivatedRoute);
