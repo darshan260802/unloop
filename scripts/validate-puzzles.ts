@@ -77,3 +77,18 @@ for(let seed=1;seed<=64;seed++)for(const standard of [false,true]){
   assert(picrossDeduction(puzzle,puzzle.initial).index>=0,'Picross has no starting deduction');
 }
 console.log('Validated 128 new Picross boards with deduction-only solutions.');
+
+import {createCargo,cargoTransfer,cargoSolved,cargoSearch} from '../src/app/features/cargo-sort/cargo-sort.engine';
+for(let seed=0;seed<72;seed++)for(const standard of [false,true]){
+  const puzzle=createCargo(seed,standard);
+  let values=puzzle.initial;
+  assert(!cargoSolved(puzzle,values),'Cargo starts solved');
+  for(const move of puzzle.clues){
+    const next=cargoTransfer(values,move[0]!,move[1]!);
+    assert(next,'Cargo solution contains illegal move');values=next;
+  }
+  assert(cargoSolved(puzzle,values),'Cargo solution failed');
+  assert(cargoTransfer(puzzle.initial,0,0)===null,'Cargo permits self transfer');
+  if(seed<4)assert(cargoSearch(puzzle.initial)!==null,'Cargo hint solver failed');
+}
+console.log('Validated 144 Cargo Sort layouts and their legal move sequences.');

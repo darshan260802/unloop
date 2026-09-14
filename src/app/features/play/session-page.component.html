@@ -2,7 +2,7 @@
 <section class="session">
   <header><div><p>{{label(current.currentGame)}} · {{session.difficulty()}}</p><h1>A little world, just for now.</h1></div><strong aria-label="Time remaining">{{minutes()}}</strong></header>
   <div class="game-card" [attr.inert]="current.phase==='paused'||current.phase==='between'||current.phase==='limit'||current.phase==='finished'?true:null">
-    @switch(current.currentGame){@case('pocket-post'){<app-number-trail/>}@case('stencil-studio'){<app-picross/>}@case('little-harbour'){<app-little-harbour/>}@case('orbit-garden'){<app-orbit-garden/>}}
+    @switch(current.currentGame){@case('pocket-post'){<app-number-trail/>}@case('stencil-studio'){<app-picross/>}@case('little-harbour'){<app-cargo-sort/>}@case('orbit-garden'){<app-orbit-garden/>}}
   </div>
   <nav aria-label="Session controls"><button tuiButton appearance="secondary" type="button" (click)="togglePause()">{{current.phase==='paused'?'Resume':'Pause'}}</button><div><button tuiButton appearance="flat" type="button" (click)="skip()">Skip</button><button tuiButton appearance="flat" type="button" (click)="finish()">Finish break</button></div></nav>
 </section>

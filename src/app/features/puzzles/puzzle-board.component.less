@@ -24,3 +24,12 @@ button{font:inherit;cursor:pointer;touch-action:manipulation}.help-button{backgr
 .picross-cell{min-height:44px;aspect-ratio:1;border:1px solid var(--border);border-radius:.3rem;background:var(--surface-soft);color:var(--ink);font-size:1.4rem;padding:0}.picross-cell.filled{background:var(--accent);color:var(--accent-contrast)}.picross-cell.marked-empty{background:var(--surface);color:var(--muted)}
 .picross-cell.hinted{outline:3px dashed var(--ink);outline-offset:-4px}
 .clue{display:flex;align-items:center;justify-content:center;gap:3px;font-size:.85rem;color:var(--ink)}.clue b{color:inherit}.column-clue{flex-direction:column;justify-content:flex-end;padding-bottom:.4rem}.row-clue{flex-wrap:wrap;align-content:center}.clue.matched{color:var(--accent);text-decoration:line-through}.clue-corner{display:grid;place-items:end center;font-size:.7rem;color:var(--muted);padding-bottom:.4rem}
+
+.cargo-yard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;max-width:29rem;margin:auto}
+.cargo-bay{padding:.6rem;border:2px solid var(--border);border-radius:1rem;background:var(--board);color:var(--ink);min-width:0;transition:transform .15s ease,border-color .15s ease}
+.cargo-bay.selected{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 4px 0 var(--accent)}.cargo-bay.hinted{outline:3px dashed var(--accent);outline-offset:2px}
+.bay-label{display:block;font-size:.8rem;font-weight:800;margin-bottom:.5rem}.cargo-stack{display:flex;flex-direction:column-reverse;gap:3px;border:1px solid var(--border);border-top:0;padding:0 3px 3px;border-radius:0 0 .5rem .5rem}
+.crate{display:grid;place-items:center;height:31px;border-radius:.35rem;border:1px solid var(--border);font-size:1.15rem;font-weight:900;color:var(--ink);background:var(--surface)}
+.crate[data-cargo='1']{background:var(--lilac)}.crate[data-cargo='2']{background:var(--mint)}.crate[data-cargo='3']{background:var(--peach)}.crate[data-cargo='4']{background:var(--sky)}.crate[data-cargo='0']{background:transparent;border-style:dashed;color:var(--muted)}
+.bay-foot{display:block;margin-top:.4rem;font-size:.64rem;font-weight:700;color:var(--muted)}
+@media(max-width:380px){.cargo-yard{gap:.4rem}.cargo-bay{padding:.35rem}.crate{height:29px}}

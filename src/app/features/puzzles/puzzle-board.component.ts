@@ -74,5 +74,9 @@ export class PuzzleBoardComponent {
     for(const value of [...values,0]){if(value===1)count++;else if(count){groups.push(count);count=0}}
     return (groups.length?groups:[0]).join(',')===this.puzzle().clues[(column?n:0)+line]!.join(',');
   }
+  protected readonly cargoSlots=[0,1,2,3];
+  protected cargoSymbol(value:number):string{return ['·','●','▲','◆','★'][value]??'·'}
+  protected cargoFull(bay:number):boolean{const stack=this.values().slice(bay*4,bay*4+4);return stack[0]!>0&&stack.every(value=>value===stack[0])}
+  protected cargoLabel(bay:number):string{return 'Bay '+(bay+1)+', top to bottom: '+this.values().slice(bay*4,bay*4+4).filter(Boolean).reverse().map(value=>this.cargoSymbol(value)).join(', ')+(this.selected()===bay?', selected':'')}
   private persist():void{try{sessionStorage.setItem(this.saveKey,JSON.stringify({id:this.session.current()?.puzzleId,values:this.values()}))}catch{/* Play without persistence if unavailable. */}}
 }

@@ -9,6 +9,23 @@
   </div>
   <div class="play-area">
     @switch(spec().kind){
+      @case('cargo'){
+        <div class="cargo-yard" role="group" aria-label="Cargo sorting bays">
+          @for(bay of rows();track bay){
+            <button class="cargo-bay" type="button" [class.selected]="selected()===bay" [class.hinted]="hinted()===bay" [attr.aria-pressed]="selected()===bay" [attr.aria-label]="cargoLabel(bay)" (click)="play(bay)">
+              <span class="bay-label">Bay {{bay+1}}</span>
+              <span class="cargo-stack">
+                @for(slot of cargoSlots;track slot){
+                  <span class="crate" [attr.data-cargo]="values()[bay*4+slot]">
+                    {{cargoSymbol(values()[bay*4+slot])}}
+                  </span>
+                }
+              </span>
+              <span class="bay-foot">{{selected()===bay?'Selected':cargoFull(bay)?'Sorted ✓':'↑ Top moves'}}</span>
+            </button>
+          }
+        </div>
+      }
       @case('picross'){
         <div class="mark-tools" role="group" aria-label="Marking tool">
           <button type="button" [attr.aria-pressed]="mode()===1" (click)="mode.set(1)">■ Fill</button>
