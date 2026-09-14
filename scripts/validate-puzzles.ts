@@ -67,3 +67,13 @@ for(let seed=1;seed<=64;seed++){
   }
 }
 console.log('Validated 128 new Number Trail boards.');
+
+import {createPicross,logicallySolvable,picrossSolved,picrossDeduction} from '../src/app/features/picross/picross.engine';
+for(let seed=1;seed<=64;seed++)for(const standard of [false,true]){
+  const puzzle=createPicross(seed,standard);
+  assert(logicallySolvable(puzzle),'Picross requires guessing: '+seed);
+  assert(picrossSolved(puzzle,puzzle.solution),'Picross solution rejected');
+  assert(!picrossSolved(puzzle,puzzle.initial),'Picross starts solved');
+  assert(picrossDeduction(puzzle,puzzle.initial).index>=0,'Picross has no starting deduction');
+}
+console.log('Validated 128 new Picross boards with deduction-only solutions.');

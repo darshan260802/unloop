@@ -9,6 +9,33 @@
   </div>
   <div class="play-area">
     @switch(spec().kind){
+      @case('picross'){
+        <div class="mark-tools" role="group" aria-label="Marking tool">
+          <button type="button" [attr.aria-pressed]="mode()===1" (click)="mode.set(1)">■ Fill</button>
+          <button type="button" [attr.aria-pressed]="mode()===0" (click)="mode.set(0)">× Empty</button>
+          <button type="button" [attr.aria-pressed]="mode()===-1" (click)="mode.set(-1)">Erase</button>
+        </div>
+        <div class="picross-scroll">
+          <div class="picross-board" role="group" aria-label="Picross board with row and column clues">
+            <span class="clue-corner" aria-hidden="true">↓ →</span>
+            @for(col of rows();track col){
+              <div class="clue column-clue" [class.matched]="lineMatched(col,true)" [attr.aria-label]="'Column '+(col+1)+' clue '+puzzle().clues[puzzle().size+col].join(', ')">
+                @for(clue of puzzle().clues[puzzle().size+col];track $index){<b>{{clue}}</b>}
+              </div>
+            }
+            @for(row of rows();track row){
+              <div class="clue row-clue" [class.matched]="lineMatched(row,false)" [attr.aria-label]="'Row '+(row+1)+' clue '+puzzle().clues[row].join(', ')">
+                @for(clue of puzzle().clues[row];track $index){<b>{{clue}}</b>}
+              </div>
+              @for(col of rows();track col){
+                <button type="button" class="picross-cell" [class.filled]="values()[row*puzzle().size+col]===1" [class.marked-empty]="values()[row*puzzle().size+col]===0" [class.hinted]="hinted()===row*puzzle().size+col" [attr.aria-label]="'Row '+(row+1)+', column '+(col+1)+', '+markName(values()[row*puzzle().size+col])" (click)="play(row*puzzle().size+col)">
+                  {{values()[row*puzzle().size+col]===0?'×':values()[row*puzzle().size+col]===1?'■':''}}
+                </button>
+              }
+            }
+          </div>
+        </div>
+      }
       @case('trail'){
         <div class="grid trail" role="group" aria-label="Number Trail board" [style.grid-template-columns]="'repeat('+puzzle().size+',minmax(0,1fr))'">
           @for(index of indices();track index){

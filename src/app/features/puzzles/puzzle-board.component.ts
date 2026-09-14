@@ -66,5 +66,13 @@ export class PuzzleBoardComponent {
     return this.values()[index]!>0&&this.values()[next]!>0&&Math.abs(this.values()[index]!-this.values()[next]!)===1;
   }
   protected label(index:number):string{return 'Row '+(Math.floor(index/this.puzzle().size)+1)+', column '+(index%this.puzzle().size+1)+(this.puzzle().clues[0]?.[index]?', checkpoint '+this.puzzle().clues[0]![index]:'')+(this.values()[index]!>0?', path step '+this.values()[index]:'')}
+  protected markName(value:number):string{return value===1?'filled':value===0?'marked empty':'undecided'}
+  protected lineMatched(line:number,column:boolean):boolean{
+    const n=this.puzzle().size,values=Array.from({length:n},(_,i)=>this.values()[column?i*n+line:line*n+i]!);
+    if(values.includes(-1))return false;
+    const groups:number[]=[];let count=0;
+    for(const value of [...values,0]){if(value===1)count++;else if(count){groups.push(count);count=0}}
+    return (groups.length?groups:[0]).join(',')===this.puzzle().clues[(column?n:0)+line]!.join(',');
+  }
   private persist():void{try{sessionStorage.setItem(this.saveKey,JSON.stringify({id:this.session.current()?.puzzleId,values:this.values()}))}catch{/* Play without persistence if unavailable. */}}
 }
