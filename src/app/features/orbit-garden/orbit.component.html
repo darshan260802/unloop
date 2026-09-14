@@ -3,7 +3,7 @@
     <div class="ring-pickers" role="group" aria-label="Select a garden ring">@for(ring of [0,1,2];track ring){<button type="button" [class.selected]="state().selected===ring" [attr.aria-pressed]="state().selected===ring" (click)="select(ring)">Ring {{ring+1}} <span>{{watered()[ring]?'connected':'open'}}</span></button>}</div>
   </div>
   <div class="play-area">
-    <div class="garden" role="img" [attr.aria-label]="state().solved?'Orbit garden fully watered':'Orbit garden with '+watered().filter(Boolean).length+' of 3 rings connected'">
+    <div class="garden" role="img" [attr.aria-label]="state().solved?'Orbit garden fully watered':'Orbit garden with '+connectedCount()+' of 3 rings connected'">
       @for(ring of [2,1,0];track ring){<div class="ring ring-{{ring}}" [class.connected]="watered()[ring]" [class.selected]="state().selected===ring" [style.transform]="transform(ring)">@for(sector of sectors;track sector){@if(fixture().channels[ring]!.includes(sector)){<i [style.transform]="sectorTransform(sector)"></i>}}</div>}
       <div class="source" aria-hidden="true">💧</div>
       @for(flower of fixture().flowers;track flower){<span class="flower" [style.transform]="'rotate('+flower*45+'deg) translateY(-9.6rem) rotate('+(-flower*45)+'deg)'">✿</span>}
