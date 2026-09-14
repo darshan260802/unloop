@@ -20,4 +20,6 @@ jobs:
         with:
           bun-version: 1.3.14
       - run: bun install
+      - name: Validate all puzzle fixtures
+        run: bun run validate:puzzles
       - run: bun run build

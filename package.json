@@ -1,12 +1,13 @@
 {
   "name": "unloop",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "validate:puzzles": "bun run scripts/validate-puzzles.ts"
   },
   "private": true,
   "packageManager": "bun@1.3.14",
