@@ -1,6 +1,7 @@
 import {GameId, SessionChoice} from './game-catalog';
 
 export type Difficulty = 'gentle' | 'standard';
+export type ThemeMode = 'light' | 'dark';
 export type SessionPhase = 'playing' | 'paused' | 'between' | 'limit' | 'overtime' | 'finished';
 
 export interface Preferences {
@@ -9,6 +10,7 @@ export interface Preferences {
   readonly reduceMotion: boolean;
   readonly sound: boolean;
   readonly haptics: boolean;
+  readonly theme: ThemeMode;
   readonly seenTutorials: readonly GameId[];
 }
 export interface SessionSnapshot {
@@ -27,5 +29,11 @@ export interface StoredData {
   readonly active: SessionSnapshot | null; readonly history: readonly SessionSummary[];
 }
 export const DEFAULT_PREFERENCES: Preferences = {
-  durationMinutes: 5, gentleOnly: false, reduceMotion: false, sound: false, haptics: false, seenTutorials: [],
+  durationMinutes: 5,
+  gentleOnly: false,
+  reduceMotion: false,
+  sound: false,
+  haptics: false,
+  theme: 'light',
+  seenTutorials: [],
 };

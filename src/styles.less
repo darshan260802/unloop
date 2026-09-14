@@ -1,42 +1,41 @@
 :root{
   color-scheme:light;
-  --ivory:#faf7f0;
-  --surface:#fff;
-  --ink:#242438;
-  --muted:#555260;
-  --plum:#554070;
-  --lilac:#ded5f5;
-  --mint:#d5ebdd;
-  --peach:#f5d7c6;
-  --line:rgba(36,36,56,.16);
-  --shadow:0 24px 60px rgba(54,43,67,.13);
-  --shadow-soft:0 8px 24px rgba(54,43,67,.08);
-  --tui-text-primary:#242438;
-  --tui-text-secondary:#555260;
-  --tui-text-tertiary:#686472;
-  --tui-background-base:#faf7f0;
-  --tui-background-base-alt:#fff;
-  --tui-background-accent-1:#554070;
-  --tui-background-accent-1-hover:#49345f;
-  --tui-text-action:#554070;
-  font-family:Manrope,ui-rounded,'SF Pro Rounded',system-ui,sans-serif;
-  color:var(--ink);
-  background:var(--ivory);
-  font-synthesis:none
+  --page:#f9f6ef;--surface:#fff;--surface-raised:#fff;--surface-soft:#f1edf6;
+  --ink:#211f2c;--muted:#595563;--accent:#5b4178;--accent-hover:#48325f;--accent-contrast:#fff;
+  --border:rgba(33,31,44,.16);--focus:#8060a5;--danger:#8b342d;
+  --lilac:#e4daf6;--mint:#d9eee0;--peach:#f6ddcf;--sky:#dcedf5;
+  --ink-plum:#72518e;--ink-mint:#5a9470;--ink-peach:#c27658;--board:#f5f1e9;
+  --shadow:0 24px 64px rgba(48,38,58,.13);--shadow-soft:0 8px 24px rgba(48,38,58,.08);
+  --gutter-left:max(1.25rem,env(safe-area-inset-left));--gutter-right:max(1.25rem,env(safe-area-inset-right));
+  --tui-text-primary:var(--ink);--tui-text-secondary:var(--muted);--tui-text-tertiary:var(--muted);
+  --tui-background-base:var(--page);--tui-background-base-alt:var(--surface);
+  --tui-background-accent-1:var(--accent);--tui-background-accent-1-hover:var(--accent-hover);--tui-text-action:var(--accent);
+  font-family:Manrope,ui-rounded,'SF Pro Rounded',system-ui,sans-serif;font-synthesis:none
+}
+:root[data-theme='dark']{
+  color-scheme:dark;
+  --page:#111018;--surface:#1b1924;--surface-raised:#24212f;--surface-soft:#2b2638;
+  --ink:#f7f3fb;--muted:#c7c0ce;--accent:#d3bdec;--accent-hover:#e2d1f4;--accent-contrast:#251a31;
+  --border:rgba(247,243,251,.17);--focus:#d6bdf2;--danger:#ffaaa2;
+  --lilac:#352c49;--mint:#243c31;--peach:#493027;--sky:#243944;
+  --ink-plum:#cfb0e9;--ink-mint:#9ed8b2;--ink-peach:#f0af91;--board:#211e2a;
+  --shadow:0 26px 68px rgba(0,0,0,.36);--shadow-soft:0 8px 26px rgba(0,0,0,.25)
 }
 *{box-sizing:border-box}
-html{min-width:320px;scroll-behavior:smooth;background:var(--ivory)}
-body,tui-root{min-width:320px;min-height:100dvh;margin:0;color:var(--ink)!important;background:radial-gradient(circle at 10% 0%,rgba(222,213,245,.45),transparent 28rem),var(--ivory)}
+html{min-width:320px;scroll-behavior:smooth;background:var(--page)}
+body,tui-root{min-width:320px;min-height:100dvh;margin:0;color:var(--ink)!important;background:radial-gradient(circle at 8% 0%,color-mix(in srgb,var(--lilac) 64%,transparent),transparent 30rem),var(--page);transition:color .22s ease,background .22s ease}
 h1,h2,h3,h4,strong,b,legend{color:var(--ink)}
+p,li,small,label,span{opacity:1}
 button,a,input{font:inherit}
 button,a{-webkit-tap-highlight-color:transparent}
 [tuiButton]{font-weight:750!important}
-[tuiButton]:not([appearance]),[tuiButton][appearance='primary']{color:#fff!important;background:#554070!important}
-[tuiButton]:not([appearance]):hover,[tuiButton][appearance='primary']:hover{background:#49345f!important}
-[tuiButton][appearance='secondary']{color:#3f2d55!important;background:#eee8f7!important;box-shadow:inset 0 0 0 1px rgba(63,45,85,.18)!important}
-[tuiButton][appearance='flat']{color:#49345f!important;background:transparent!important}
-button:disabled,[tuiButton][data-state='disabled']{opacity:.58}
-button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #75569a;outline-offset:3px}
+[tuiButton]:not([appearance]),[tuiButton][appearance='primary']{color:var(--accent-contrast)!important;background:var(--accent)!important}
+[tuiButton]:not([appearance]):hover,[tuiButton][appearance='primary']:hover{background:var(--accent-hover)!important}
+[tuiButton][appearance='secondary']{color:var(--ink)!important;background:var(--surface-soft)!important;box-shadow:inset 0 0 0 1px var(--border)!important}
+[tuiButton][appearance='flat']{color:var(--accent)!important;background:transparent!important}
+button:disabled{opacity:.48}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
 ::selection{background:var(--lilac);color:var(--ink)}
+main :is(.home,.session,.settings,.summary){width:min(100%,72rem)!important;padding-left:var(--gutter-left)!important;padding-right:var(--gutter-right)!important}
 .reduce-motion *,.reduce-motion *::before,.reduce-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

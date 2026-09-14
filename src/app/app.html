@@ -2,7 +2,10 @@
   <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="shell-header">
     <a class="brand" routerLink="/" aria-label="Unloop home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>unloop</span></a>
-    <nav aria-label="Primary navigation"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a><a routerLink="/settings" routerLinkActive="active">Settings</a></nav>
+    <div class="header-actions">
+      <nav aria-label="Primary navigation"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a><a routerLink="/settings" routerLinkActive="active">Settings</a></nav>
+      <button class="theme-toggle" type="button" [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'" [attr.aria-pressed]="isDark()" (click)="toggleTheme()"><span aria-hidden="true">{{isDark() ? '☀' : '☾'}}</span><b>{{isDark() ? 'Light' : 'Dark'}}</b></button>
+    </div>
   </header>
   <main id="main-content" tabindex="-1"><router-outlet/></main>
   <footer><p>A quiet pocket for your attention. Everything stays on this device.</p></footer>
