@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "tui-migration": {
+      "source": "taiga-family/skills",
+      "sourceType": "github",
+      "skillPath": "general/tui-migration/SKILL.md",
+      "computedHash": "1b398286157825b617359b5243dc585f47046e816c05b869fade9b9778954c8c"
+    }
+  }
+}
