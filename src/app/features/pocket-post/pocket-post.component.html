@@ -1,0 +1,23 @@
+<section class="game-layout">
+  <div class="instructions">
+    <p class="eyebrow">Pocket Post · {{fixture().difficulty}}</p>
+    <h2>Bring every parcel home.</h2>
+    <p>Build one path from the bicycle to the flag. Collect each symbol before visiting its matching house.</p>
+    <ul><li>Tap neighbouring squares</li><li>Tap the previous square to step back</li><li>Paths cannot cross or enter resting squares</li></ul>
+  </div>
+  <div class="play-area">
+    <div class="board" role="grid" aria-label="Pocket Post route grid" [style.grid-template-columns]="'repeat(' + fixture().size + ', 1fr)'">
+      @for (cell of cells(); track cell.row + ':' + cell.col) {
+        <button type="button" role="gridcell" [class]="cellClass(cell)" [attr.aria-label]="label(cell)" [attr.aria-pressed]="cellClass(cell) === 'path'" [disabled]="cellClass(cell) === 'blocked' || state().solved" (click)="select(cell)"><span>{{content(cell)}}</span></button>
+      }
+    </div>
+    <p class="message" aria-live="polite">{{state().message}}</p>
+    @if (guidedReset()) { <button class="guided" type="button" (click)="useGuidedReset()">Reset and show the first step</button> }
+    <div class="actions">
+      <button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().path.length <= 1">Undo</button>
+      <button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button>
+      <button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button>
+      <button tuiButton type="button" (click)="check()" [disabled]="state().solved">Go</button>
+    </div>
+  </div>
+</section>
