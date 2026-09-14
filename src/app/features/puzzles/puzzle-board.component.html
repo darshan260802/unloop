@@ -9,6 +9,29 @@
   </div>
   <div class="play-area">
     @switch(spec().kind){
+      @case('circuit'){
+        <div class="mark-tools" role="group" aria-label="Circuit tool">
+          <button type="button" [attr.aria-pressed]="mode()===1" (click)="mode.set(1)">↻ Rotate</button>
+          <button type="button" [attr.aria-pressed]="mode()===-1" (click)="mode.set(-1)">↺ Rotate</button>
+          <button type="button" [attr.aria-pressed]="mode()===2" (click)="mode.set(2)">Lock</button>
+        </div>
+        <div class="grid circuit" role="group" aria-label="Circuit network" [style.grid-template-columns]="'repeat('+puzzle().size+',minmax(0,1fr))'">
+          @for(index of indices();track index){
+            <button type="button" [class.powered]="powered().has(index)" [class.hinted]="hinted()===index" [class.locked]="locks().has(index)" [attr.aria-label]="circuitLabel(index)" (click)="play(index)">
+              <svg viewBox="0 0 60 60" aria-hidden="true">
+                @if(hasPort(values()[index],1)){<path d="M30 30V0"/>}
+                @if(hasPort(values()[index],2)){<path d="M30 30H60"/>}
+                @if(hasPort(values()[index],4)){<path d="M30 30V60"/>}
+                @if(hasPort(values()[index],8)){<path d="M30 30H0"/>}
+                <circle cx="30" cy="30" r="7"/>
+              </svg>
+              @if(isSource(index)){<span class="source" aria-hidden="true">ϟ</span>}
+              @if(locks().has(index)){<small class="lock-mark" aria-hidden="true">L</small>}
+            </button>
+          }
+        </div>
+        <p class="wire-legend">ϟ Power source · L Locked · lit wires carry power</p>
+      }
       @case('cargo'){
         <div class="cargo-yard" role="group" aria-label="Cargo sorting bays">
           @for(bay of rows();track bay){

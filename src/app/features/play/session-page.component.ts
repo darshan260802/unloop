@@ -5,13 +5,13 @@ import {GAME_CARDS,GameId,SessionChoice} from '../../core/game-catalog';
 import {SessionService} from '../../core/session.service';
 import {StorageService} from '../../core/storage.service';
 import {CargoSortComponent} from '../cargo-sort/cargo-sort.component';
-import {OrbitComponent} from '../orbit-garden/orbit.component';
+import {CircuitComponent} from '../circuit/circuit.component';
 import {NumberTrailComponent} from '../number-trail/number-trail.component';
 import {PicrossComponent} from '../picross/picross.component';
 
 const isChoice=(value:string|null):value is SessionChoice=>value==='random'||GAME_CARDS.some((game)=>game.id===value);
 
-@Component({selector:'app-session-page',imports:[TuiButton,NumberTrailComponent,PicrossComponent,CargoSortComponent,OrbitComponent],styleUrl:'./session-page.component.less',templateUrl:'./session-page.component.html'})
+@Component({selector:'app-session-page',imports:[TuiButton,NumberTrailComponent,PicrossComponent,CargoSortComponent,CircuitComponent],styleUrl:'./session-page.component.less',templateUrl:'./session-page.component.html'})
 export class SessionPageComponent{
   protected readonly session=inject(SessionService);protected readonly storage=inject(StorageService);
   private readonly router=inject(Router);private readonly route=inject(ActivatedRoute);
@@ -22,7 +22,7 @@ export class SessionPageComponent{
   }
   protected label(id:GameId):string{return GAME_CARDS.find((game)=>game.id===id)?.name??id}
   protected minutes():string{const seconds=Math.ceil(this.session.remainingMs()/1000);return `${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`}
-  protected tutorialText(id:GameId):string{switch(id){case'pocket-post':return'Number Trail: connect checkpoints in order and visit every square once.';case'stencil-studio':return'Picross: use row and column clues to fill squares or mark them empty.';case'little-harbour':return'Cargo Sort: move top crates onto matching symbols and sort every bay.';case'orbit-garden':return'Select a ring and rotate it until all channels connect.'}}
+  protected tutorialText(id:GameId):string{switch(id){case'pocket-post':return'Number Trail: connect checkpoints in order and visit every square once.';case'stencil-studio':return'Picross: use row and column clues to fill squares or mark them empty.';case'little-harbour':return'Cargo Sort: move top crates onto matching symbols and sort every bay.';case'orbit-garden':return'Circuit: rotate wires to power the whole network without loose ends.'}}
   protected tryDemo():void{this.demoDone.set(true)}
   protected closeTutorial():void{const game=this.tutorialGame();if(game)this.storage.markTutorialSeen(game);this.tutorialGame.set(null);this.session.resume()}
   protected togglePause():void{this.session.current()?.phase==='paused'?this.session.resume():this.session.pause()}

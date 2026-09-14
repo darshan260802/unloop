@@ -92,3 +92,13 @@ for(let seed=0;seed<72;seed++)for(const standard of [false,true]){
   if(seed<4)assert(cargoSearch(puzzle.initial)!==null,'Cargo hint solver failed');
 }
 console.log('Validated 144 Cargo Sort layouts and their legal move sequences.');
+
+import {createCircuit,circuitSolved,rotatePorts,circuitHint} from '../src/app/features/circuit/circuit.engine';
+for(let seed=0;seed<128;seed++)for(const standard of [false,true]){
+  const puzzle=createCircuit(seed,standard);
+  assert(circuitSolved(puzzle,puzzle.solution),'Circuit solution invalid');
+  assert(!circuitSolved(puzzle,puzzle.initial),'Circuit starts solved');
+  assert(circuitHint(puzzle,puzzle.initial).index>=0,'Circuit hint unavailable');
+  assert(puzzle.initial.every((value,i)=>{let port=value;for(let turn=0;turn<4;turn++){if(port===puzzle.solution[i])return true;port=rotatePorts(port)}return false}),'Circuit has unreachable tile');
+}
+console.log('Validated 256 Circuit networks.');

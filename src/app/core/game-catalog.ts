@@ -14,5 +14,5 @@ export const GAME_CARDS: readonly GameCard[] = [
   {id: 'pocket-post', name: 'Number Trail', eyebrow: 'Find the route', description: 'Connect numbered checkpoints. Fill every square.', accent: 'peach', symbol: '↗'},
   {id: 'stencil-studio', name: 'Picross', eyebrow: 'Read the clues', description: 'Deduce a hidden pattern, one square at a time.', accent: 'lilac', symbol: '✦'},
   {id: 'little-harbour', name: 'Cargo Sort', eyebrow: 'Think ahead', description: 'Untangle mixed stacks with limited working space.', accent: 'sky', symbol: '≈'},
-  {id: 'orbit-garden', name: 'Orbit Garden', eyebrow: 'Connect the flow', description: 'Rotate rings until every flower drinks.', accent: 'mint', symbol: '◎'},
+  {id: 'orbit-garden', name: 'Circuit', eyebrow: 'Connect the network', description: 'Rotate wires and reason your way to a powered grid.', accent: 'mint', symbol: '◎'},
 ];
