@@ -1,23 +1,34 @@
 <section class="game-layout">
   <div class="instructions">
-    <p class="eyebrow">Pocket Post · {{fixture().difficulty}}</p>
-    <h2>Bring every parcel home.</h2>
-    <p>Build one path from the bicycle to the flag. Collect each symbol before visiting its matching house.</p>
-    <ul><li>Tap neighbouring squares</li><li>Tap the previous square to step back</li><li>Paths cannot cross or enter resting squares</li></ul>
+    <div class="game-label"><span aria-hidden="true">↗</span><p>Pocket Post <small>{{fixture().difficulty}}</small></p></div>
+    <h2>Collect. Deliver. Reach the flag.</h2>
+    <p>Tap squares beside the courier to draw one unbroken route. Pick up every parcel before its matching house.</p>
+    <div class="delivery-progress" aria-label="Delivery progress">
+      @for(item of progress();track item.symbol){
+        <div [class.collected]="item.collected" [class.delivered]="item.delivered"><span>{{item.symbol}}</span><p><b>{{item.delivered?'Delivered':item.collected?'On the bike':'Waiting'}}</b><small>{{item.delivered?'Home reached':item.collected?'Find its house':'Collect parcel'}}</small></p></div>
+      }
+    </div>
+    <div class="legend"><span><i class="parcel-key"></i> Parcel</span><span><i class="home-key"></i> Home</span><span><i class="closed-key"></i> Closed</span></div>
   </div>
   <div class="play-area">
-    <div class="board" role="grid" aria-label="Pocket Post route grid" [style.grid-template-columns]="'repeat(' + fixture().size + ', 1fr)'">
-      @for (cell of cells(); track cell.row + ':' + cell.col) {
-        <button type="button" role="gridcell" [class]="cellClass(cell)" [attr.aria-label]="label(cell)" [attr.aria-pressed]="cellClass(cell) === 'path'" [disabled]="cellClass(cell) === 'blocked' || state().solved" (click)="select(cell)"><span>{{content(cell)}}</span></button>
+    <div class="board" role="grid" aria-label="Pocket Post route grid" [style.grid-template-columns]="'repeat('+fixture().size+',1fr)'">
+      @for(cell of cells();track cell.row+':'+cell.col){
+        <button type="button" role="gridcell" [class.path]="isPath(cell)" [class.current]="isCurrent(cell)" [class.hinted]="isHinted(cell)" [class.blocked]="isBlocked(cell)" [class.start]="isStart(cell)" [class.exit]="isExit(cell)" [class.parcel]="parcel(cell)" [class.home]="home(cell)" [attr.aria-label]="label(cell)" [attr.aria-pressed]="isPath(cell)" [disabled]="isBlocked(cell)||state().solved" (click)="select(cell)">
+          @if(isStart(cell)){<span class="object" aria-hidden="true">🚲</span>}
+          @else if(isExit(cell)){<span class="object flag" aria-hidden="true">⚑</span>}
+          @else if(parcel(cell)){<span class="object parcel-object" aria-hidden="true">▣<b>{{parcel(cell)}}</b></span>}
+          @else if(home(cell)){<span class="object home-object" aria-hidden="true">⌂<b>{{home(cell)}}</b></span>}
+          @if(isPath(cell)){<small class="step" aria-hidden="true">{{order(cell)}}</small>}
+        </button>
       }
     </div>
     <p class="message" aria-live="polite">{{state().message}}</p>
-    @if (guidedReset()) { <button class="guided" type="button" (click)="useGuidedReset()">Reset and show the first step</button> }
+    @if(guidedReset()){<button class="guided" type="button" (click)="useGuidedReset()">Reset and show a guided first step</button>}
     <div class="actions">
-      <button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().path.length <= 1">Undo</button>
+      <button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().path.length<=1">Undo</button>
       <button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button>
       <button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button>
-      <button tuiButton type="button" (click)="check()" [disabled]="state().solved">Go</button>
+      <button tuiButton type="button" (click)="check()" [disabled]="!canDeliver()||state().solved">Deliver mail</button>
     </div>
   </div>
 </section>
