@@ -1,15 +1,11 @@
 <tui-root>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="shell-header">
-    <a class="brand" routerLink="/" aria-label="Unloop home">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span>unloop</span>
-    </a>
-    <nav aria-label="Primary navigation">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-      <a routerLink="/settings" routerLinkActive="active">Settings</a>
-    </nav>
+    <a class="brand" routerLink="/" aria-label="Unloop home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>unloop</span></a>
+    <nav aria-label="Primary navigation"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a><a routerLink="/settings" routerLinkActive="active">Settings</a></nav>
   </header>
-  <main id="main-content" tabindex="-1"><router-outlet /></main>
+  <main id="main-content" tabindex="-1"><router-outlet/></main>
   <footer><p>A quiet pocket for your attention. Everything stays on this device.</p></footer>
+  @if(pwa.updateAvailable()){<aside class="pwa-toast" role="status"><span>A fresh version is ready.</span><button tuiButton size="s" type="button" (click)="pwa.update()">Update</button></aside>}
+  @else if(pwa.canInstall()){<aside class="pwa-toast" role="status"><span>Keep Unloop close and ready offline.</span><button tuiButton size="s" type="button" (click)="pwa.install()">Install</button></aside>}
 </tui-root>

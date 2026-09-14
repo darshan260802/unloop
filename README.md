@@ -1,59 +1,38 @@
-# MentalMania
+# Unloop
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+An installable, offline-first Angular PWA with four gentle miniature puzzle worlds for focused 5–10 minute breaks. Unloop has no account, backend, ads, ranks, streaks, or public network API. Preferences, active play, and the latest 100 summaries stay in local browser storage.
 
-## Development server
+## Run locally
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Requirements: Bun 1.3+ and a current Node.js LTS runtime.
 
 ```bash
-ng generate component component-name
+bun install
+bun start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Open http://localhost:4200. Development mode does not enable the service worker.
+
+## Production build
 
 ```bash
-ng generate --help
+bun run build
 ```
 
-## Building
+Serve the generated `dist/mental-mania/browser` directory over HTTPS. Configure the host to fall back all extensionless routes to `index.html`. Do not cache `ngsw.json` at the CDN; Angular's service worker manages app-shell and lazy-game caching.
 
-To build the project run:
+Examples:
 
-```bash
-ng build
-```
+- Netlify: publish `dist/mental-mania/browser` and add `/* /index.html 200`.
+- Cloudflare Pages: build with `bun run build`, output `dist/mental-mania/browser`.
+- Firebase Hosting: set `public` to the browser output and rewrite `**` to `/index.html`.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Install and offline use
 
-## Running unit tests
+Visit the HTTPS deployment once and wait for the install prompt. Chrome/Edge expose Install directly. On iOS Safari, use Share → Add to Home Screen. Offline readiness is shown only after the service worker controls the app; all lazy game bundles, styles, icons, and shell files are prefetched.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Updates are offered outside the game surface. Accepting an update activates the cached version and reloads; versioned local records remain compatible.
 
-```bash
-ng test
-```
+## Controls
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Every world supports pointer and keyboard activation. Pause, hint, undo, reset, skip, and finish controls remain available without penalties. Hints reset the next difficulty to gentle. The clock counts active play only and pauses when the page is hidden.

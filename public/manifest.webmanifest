@@ -1,0 +1,16 @@
+{
+  "name": "Unloop — mindful puzzle breaks",
+  "short_name": "Unloop",
+  "description": "Four gentle miniature puzzles for a short attention break.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FAF7F0",
+  "theme_color": "#554070",
+  "categories": ["games","lifestyle"],
+  "icons": [
+    {"src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
+    {"src": "icons/maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable"}
+  ]
+}
