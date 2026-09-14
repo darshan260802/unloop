@@ -2,13 +2,14 @@ import {computed,DestroyRef,inject,Injectable,signal} from '@angular/core';
 import {GAME_CARDS,SessionChoice} from './game-catalog';
 import {Difficulty,SessionSnapshot,SessionSummary} from './session.models';
 import {StorageService} from './storage.service';
+import {FeedbackService} from './feedback.service';
 
 const IDS=GAME_CARDS.map((game)=>game.id);
 function shuffle<T>(items:readonly T[]):T[]{const result=[...items];for(let index=result.length-1;index>0;index--){const target=Math.floor(Math.random()*(index+1));[result[index],result[target]]=[result[target]!,result[index]!]}return result}
 
 @Injectable({providedIn:'root'})
 export class SessionService{
-  private readonly storage=inject(StorageService);private readonly destroyRef=inject(DestroyRef);
+  private readonly storage=inject(StorageService);private readonly feedbackService=inject(FeedbackService);private readonly destroyRef=inject(DestroyRef);
   readonly current=signal<SessionSnapshot|null>(this.storage.active());
   readonly remainingMs=computed(()=>{const value=this.current();return value?Math.max(0,value.durationMinutes*60_000-value.activeMs):0});
   readonly difficulty=computed<Difficulty>(()=>!this.storage.preferences().gentleOnly&&(this.current()?.unassistedStreak??0)>=3?'standard':'gentle');
@@ -26,7 +27,7 @@ export class SessionService{
   finish():SessionSummary|null{const value=this.current();if(!value)return null;const summary:SessionSummary={id:value.id,completedAt:new Date().toISOString(),durationMs:value.activeMs,puzzleCount:value.puzzleCount,games:Array.from(new Set([value.currentGame,...value.queue]))};this.current.set(null);this.storage.addSummary(summary);return summary}
   discard():void{this.current.set(null);this.storage.saveActive(null)}
   private tick():void{const value=this.current();if(!value||value.phase!=='playing')return;const activeMs=Math.min(value.durationMinutes*60_000,value.activeMs+1000);this.patch({activeMs,phase:activeMs>=value.durationMinutes*60_000?'limit':'playing'})}
-  private feedback():void{const preferences=this.storage.preferences();if(preferences.haptics&&'vibrate' in navigator)navigator.vibrate(35);if(preferences.sound){try{const context=new AudioContext();const oscillator=context.createOscillator();const gain=context.createGain();gain.gain.setValueAtTime(.035,context.currentTime);gain.gain.exponentialRampToValueAtTime(.001,context.currentTime+.22);oscillator.frequency.value=523;oscillator.connect(gain);gain.connect(context.destination);oscillator.start();oscillator.stop(context.currentTime+.22)}catch{}}}
+  private feedback():void{const preferences=this.storage.preferences();void this.feedbackService.completion(preferences.sound,preferences.haptics)}
   private patch(patch:Partial<SessionSnapshot>):void{const value=this.current();if(value)this.set({...value,...patch})}
   private set(value:SessionSnapshot):void{this.current.set(value);this.storage.saveActive(value)}
 }
