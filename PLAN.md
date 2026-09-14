@@ -80,3 +80,14 @@ Read AGENTS.md and PLAN.md, inspect git state, resume first incomplete checkpoin
 - Added Angular service-worker configuration, manifest, branded SVG icons, install/update prompts, offline asset prefetching, CI build, and static-hosting documentation.
 - Verification: GitHub Actions ran `bun install` and `bun run build` successfully on commit `3796b6e`.
 - Per implementation direction, unit/e2e/axe suites, screenshots, physical iOS/Android installs, screen-reader review, and human usability sessions were not performed. Checkpoint 9 remains open for that release evidence.
+
+### 2026-09-14 — visibility and gameplay redesign
+- Replaced fixed light-only colors with semantic, WCAG-conscious light and dark palettes; added a persistent header toggle and matching settings controls.
+- Added safe-area-aware mobile gutters and responsive board/control sizing so cards and actions no longer touch narrow screen edges.
+- Rebuilt Pocket Post around a visible ordered route, live delivery progress, and a clearly gated Deliver action.
+- Rebuilt Stencil Studio with a permanently visible target/current comparison, symbol-plus-color cues, live mask preview, and explicit left/right rotation.
+- Rebuilt Little Harbour with visible deterministic destinations, highlighted junction choices, queue progress, and clear launch outcomes.
+- Rebuilt Orbit Garden as three selectable eight-sector tracks with an explicit water drop, flower target, directional controls, and reachable target offsets.
+- Added `validate:puzzles` and made CI run every known solution through all 48 shipped fixtures before the production build.
+- Verification: all 48 fixture checks and `bun run build` passed in GitHub Actions on commit `edec360` (run 34878558227).
+- Per implementation direction, broader unit/e2e/axe suites and device screenshot review remain outside this pass; Checkpoint 9 remains open.
