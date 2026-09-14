@@ -53,3 +53,17 @@ for(const fixture of ORBIT_FIXTURES){
 
 const total=POCKET_FIXTURES.length+STENCIL_FIXTURES.length+HARBOUR_FIXTURES.length+ORBIT_FIXTURES.length;
 console.log(`Validated ${total} playable fixtures across four games.`);
+
+import {createTrail,trailMove,trailSolved,trailHint} from '../src/app/features/number-trail/number-trail.engine';
+for(let seed=1;seed<=64;seed++){
+  for(const standard of [false,true]){
+    const puzzle=createTrail(seed,standard);
+    assert(!trailSolved(puzzle,puzzle.initial),'Trail starts solved');
+    let values=puzzle.initial;
+    for(let step=2;step<=puzzle.solution.length;step++)values=trailMove(puzzle,values,puzzle.solution.indexOf(step)).values;
+    assert(trailSolved(puzzle,values),'Trail '+seed+' solution invalid');
+    assert(!trailSolved(puzzle,puzzle.initial),'Trail accepts incomplete board');
+    if(seed<=4)assert(trailHint(puzzle,puzzle.initial).index>=0,'Trail initial hint missing');
+  }
+}
+console.log('Validated 128 new Number Trail boards.');

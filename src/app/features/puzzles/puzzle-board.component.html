@@ -1,0 +1,35 @@
+<section class="puzzle-layout">
+  <div class="brief">
+    <p class="eyebrow">{{spec().subtitle}}</p>
+    <h2>{{spec().title}}</h2>
+    <p class="rules">{{spec().instructions}}</p>
+    <button class="help-button" type="button" [attr.aria-expanded]="help()" (click)="help.set(!help())">How to think about it {{help()?'−':'+'}}</button>
+    @if(help()){<p class="tip">{{spec().tip}}</p>}
+    <div class="progress"><span class="status-dot" aria-hidden="true"></span>{{status()}}</div>
+  </div>
+  <div class="play-area">
+    @switch(spec().kind){
+      @case('trail'){
+        <div class="grid trail" role="group" aria-label="Number Trail board" [style.grid-template-columns]="'repeat('+puzzle().size+',minmax(0,1fr))'">
+          @for(index of indices();track index){
+            <button type="button" [class.visited]="values()[index]>0" [class.endpoint]="values()[index]===maximum()" [class.hinted]="hinted()===index" [attr.aria-label]="label(index)" (click)="play(index)">
+              @if(edge(index,-puzzle().size)){<i class="path north"></i>}
+              @if(edge(index,1)){<i class="path east"></i>}
+              @if(edge(index,puzzle().size)){<i class="path south"></i>}
+              @if(edge(index,-1)){<i class="path west"></i>}
+              @if(puzzle().clues[0][index]){<b class="checkpoint">{{puzzle().clues[0][index]}}</b>}
+              @else if(values()[index]===maximum()){<span class="head" aria-hidden="true"></span>}
+              @else{<span class="dot" aria-hidden="true"></span>}
+            </button>
+          }
+        </div>
+      }
+    }
+    <p class="message" role="status">{{message()}}</p>
+    <div class="controls">
+      <button type="button" (click)="undo()" [disabled]="history().length===0">↶ Undo</button>
+      <button type="button" (click)="reset()">Reset</button>
+      <button class="primary" type="button" (click)="hint()">Hint</button>
+    </div>
+  </div>
+</section>

@@ -11,7 +11,7 @@ export interface GameCard {
 }
 
 export const GAME_CARDS: readonly GameCard[] = [
-  {id: 'pocket-post', name: 'Pocket Post', eyebrow: 'Plan a path', description: 'Guide tiny parcels home in the right order.', accent: 'peach', symbol: '↗'},
+  {id: 'pocket-post', name: 'Number Trail', eyebrow: 'Find the route', description: 'Connect numbered checkpoints. Fill every square.', accent: 'peach', symbol: '↗'},
   {id: 'stencil-studio', name: 'Stencil Studio', eyebrow: 'Layer a picture', description: 'Rotate simple masks to make a postcard.', accent: 'lilac', symbol: '✦'},
   {id: 'little-harbour', name: 'Little Harbour', eyebrow: 'Set the channels', description: 'Turn junctions and welcome every boat.', accent: 'sky', symbol: '≈'},
   {id: 'orbit-garden', name: 'Orbit Garden', eyebrow: 'Connect the flow', description: 'Rotate rings until every flower drinks.', accent: 'mint', symbol: '◎'},
