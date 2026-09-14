@@ -1,4 +1,11 @@
 <section class="home">
+  @if (storage.notice()) { <p class="notice" role="status">{{storage.notice()}}</p> }
+  @if (session.hasResume()) {
+    <aside class="resume-card">
+      <div><p class="eyebrow">Saved safely</p><h2>Your break is waiting.</h2><p>Continue where you left off, or start fresh.</p></div>
+      <div class="resume-actions"><button tuiButton type="button" (click)="resume()">Resume</button><button tuiButton appearance="secondary" type="button" (click)="discard()">Discard</button></div>
+    </aside>
+  }
   <div class="hero">
     <div class="hero-copy">
       <p class="eyebrow">A small reset, played your way</p>
@@ -8,29 +15,25 @@
         <button type="button" [class.selected]="duration() === 5" (click)="duration.set(5)" [attr.aria-pressed]="duration() === 5">5 min</button>
         <button type="button" [class.selected]="duration() === 10" (click)="duration.set(10)" [attr.aria-pressed]="duration() === 10">10 min</button>
       </div>
-      <a tuiButton appearance="primary" size="l" [routerLink]="['/play']" [queryParams]="{game: 'random', minutes: duration()}">Start a {{duration()}}-minute break</a>
+      <button tuiButton appearance="primary" size="l" type="button" (click)="start('random')">Start a {{duration()}}-minute break</button>
       <p class="privacy">Private by design · works offline after first visit</p>
     </div>
     <div class="hero-art" aria-hidden="true">
       <div class="sun"></div><div class="hill hill-one"></div><div class="hill hill-two"></div>
-      <div class="orbit"><span>✿</span><span>✦</span><span>⌂</span></div>
-      <div class="tiny-path"></div>
+      <div class="orbit"><span>✿</span><span>✦</span><span>⌂</span></div><div class="tiny-path"></div>
     </div>
   </div>
-
   <div class="section-heading">
     <div><p class="eyebrow">Or choose a world</p><h2>Four ways to gently focus</h2></div>
     <p>Each game begins with a tiny example and stays easy to leave.</p>
   </div>
   <div class="game-grid">
     @for (game of games; track game.id) {
-      <a class="game-card" [class]="game.accent" [routerLink]="['/play']" [queryParams]="{game: game.id, minutes: duration()}">
+      <button class="game-card" [class]="game.accent" type="button" (click)="start(game.id)">
         <div class="miniature" aria-hidden="true"><span>{{game.symbol}}</span><i></i><b></b></div>
-        <p class="eyebrow">{{game.eyebrow}}</p>
-        <h3>{{game.name}}</h3>
-        <p>{{game.description}}</p>
+        <span class="eyebrow">{{game.eyebrow}}</span><strong>{{game.name}}</strong><span>{{game.description}}</span>
         <span class="card-action">Enter world <span aria-hidden="true">→</span></span>
-      </a>
+      </button>
     }
   </div>
   <aside class="promise"><span aria-hidden="true">◌</span><div><h2>Your pace is the right pace.</h2><p>Pause, undo, reset, ask for a hint, or skip whenever you like. Nothing here is graded.</p></div></aside>
