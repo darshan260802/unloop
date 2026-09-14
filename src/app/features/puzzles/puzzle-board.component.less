@@ -40,3 +40,7 @@ button{font:inherit;cursor:pointer;touch-action:manipulation}.help-button{backgr
 .lock-mark{position:absolute;right:3px;bottom:1px;color:var(--ink);font-size:.6rem;font-weight:900}.wire-legend{font-size:.72rem;color:var(--muted);text-align:center;margin:.65rem 0}
 
 @media(max-width:380px){.brief{padding:.4rem}.message{padding:0 .4rem;font-size:.9rem}.controls{padding:0 .2rem .4rem}}
+
+/* Only the two drawing surfaces capture touch; the rest of the page scrolls normally. */
+.trail,.picross-board{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.trail button,.picross-cell{touch-action:none}.trail.drawing{cursor:crosshair}.gesture-tip{margin:0 0 .75rem;color:var(--muted);font-size:.78rem;line-height:1.5;text-align:center}

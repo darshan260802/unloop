@@ -98,3 +98,10 @@ Read AGENTS.md and PLAN.md, inspect git state, resume first incomplete checkpoin
 - Retired the old game engines/components. Retained internal GameId strings for saved preference and URL compatibility.
 - Added procedural fresh starts, persistent recent-board avoidance, repeatable seeded reloads, meaningful hints, undo/reset, new home previews and dialog focus trapping.
 - See docs/NEW_GAMES.md for game rules, research references, generator constraints, verification and remaining device/playtesting limitations.
+
+### 2026-09-14 — swipe controls and subtle motion
+- Added a reusable pointer-capture grid directive for touch, pen and mouse. Number Trail supports drawing and backtracking; interpolated/coalesced samples retain cells in fast strokes. Picross supports consistent swipe painting/erasing. Tap and keyboard activation remain available; handled pointer clicks are suppressed.
+- Added short path/checkpoint, wire rotation, crate, page/card/dialog and control animations. Game state commits immediately and never waits for animation. System and in-app reduced-motion preferences disable CSS and Web Animations.
+- Added focused Chromium smoke checks at 320/390px for touch completion, backtracking, cancellation, keyboard fallback, fast strokes, Picross painting, reduced motion and page overflow.
+- Browser behaviour reference: https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture and https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action .
+- Validation result is tracked by the commit's Build workflow. Physical device testing remains separate.

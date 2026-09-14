@@ -29,7 +29,7 @@ export function trailMove(puzzle:Puzzle,values:readonly number[],index:number):M
   if(labels[index]!>0&&labels[index]!==visited+1)return{values,selected:-1,message:'Reach checkpoint '+(visited+1)+' next.'};
   if(labels[index]===Math.max(...labels)&&length!==values.length-1)return{values,selected:-1,message:'The final checkpoint is the finish. Fill every other square first.'};
   const next=[...values];next[index]=length+1;
-  return{values:next,selected:-1,message:'Keep a way through the unvisited squares. Tap an earlier square to rewind.'};
+  return{values:next,selected:-1,message:'Keep a way through the unvisited squares. Slide back along the path or tap an earlier square to rewind.'};
 }
 export function trailSolved(puzzle:Puzzle,values:readonly number[]):boolean {
   if(values.some(value=>value===0)||new Set(values).size!==values.length)return false;
@@ -64,8 +64,8 @@ export function trailHint(puzzle:Puzzle,values:readonly number[]):Hint {
 }
 export const TRAIL:PuzzleSpec={
   id:'pocket-post',kind:'trail',title:'Number Trail',subtitle:'Spatial planning',
-  instructions:'Start at 1. Draw one continuous path through every square, visiting the numbered checkpoints in order. Move horizontally or vertically; never cross your path.',
-  tip:'Look ahead: a tempting shortcut can isolate an entire corner. Tap an earlier square to rewind.',
+  instructions:'Start at 1. Swipe or tap to draw one continuous path through every square, visiting the numbered checkpoints in order. Move horizontally or vertically; never cross your path.',
+  tip:'Look ahead: a tempting shortcut can isolate an entire corner. Slide back along the path or tap an earlier square to rewind.',
   create:createTrail,act:trailMove,solved:trailSolved,hint:trailHint,
   status:(_p,values)=>Math.max(...values)+' / '+values.length+' squares connected'
 };

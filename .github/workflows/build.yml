@@ -23,3 +23,10 @@ jobs:
       - name: Validate all puzzle fixtures
         run: bun run validate:puzzles
       - run: bun run build
+
+      - name: Install browser smoke-check tools
+        run: bun add --no-save --ignore-scripts playwright@1.58.2
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+      - name: Check touch gestures and reduced motion
+        run: bun run scripts/validate-gestures.ts

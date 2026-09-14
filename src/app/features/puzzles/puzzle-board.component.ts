@@ -2,9 +2,11 @@ import {Component,computed,effect,inject,input,signal,untracked} from '@angular/
 import {SessionService} from '../../core/session.service';
 import {connected,portNames} from '../circuit/circuit.engine';
 import {freshPuzzle} from './fresh-puzzle';
+import {SwipeCell,SwipeGridDirective} from './swipe-grid.directive';
+import {MoveMotionDirective} from './move-motion.directive';
 import {Puzzle,PuzzleSpec} from './puzzle.model';
 
-@Component({selector:'app-puzzle-board',templateUrl:'./puzzle-board.component.html',styleUrl:'./puzzle-board.component.less'})
+@Component({selector:'app-puzzle-board',imports:[SwipeGridDirective,MoveMotionDirective],templateUrl:'./puzzle-board.component.html',styleUrl:'./puzzle-board.component.less'})
 export class PuzzleBoardComponent {
   readonly spec=input.required<PuzzleSpec>();
   protected readonly session=inject(SessionService);
@@ -22,6 +24,23 @@ export class PuzzleBoardComponent {
   protected readonly indices=computed(()=>Array.from({length:this.puzzle().size**2},(_,i)=>i));
   protected readonly rows=computed(()=>Array.from({length:this.puzzle().size},(_,i)=>i));
   protected readonly maximum=computed(()=>Math.max(0,...this.values()));
+  protected readonly inputDisabled=computed(()=>!['playing','overtime'].includes(this.session.current()?.phase??''));
+  private paintValue=1;
+  private readonly painted=new Set<number>();
+  protected swipeCell(cell:SwipeCell):void{
+    if(this.inputDisabled())return;
+    if(this.spec().kind==='picross'){
+      if(cell.first){this.painted.clear();this.paintValue=this.values()[cell.index]===this.mode()?-1:this.mode()}
+      if(this.painted.has(cell.index))return;
+      this.painted.add(cell.index);
+      if(this.values()[cell.index]===this.paintValue)return;
+      const tool=this.mode();this.mode.set(this.paintValue);this.play(cell.index);this.mode.set(tool);
+      return;
+    }
+    // Resting on the current endpoint should not add a no-op undo entry.
+    if(this.values()[cell.index]===this.maximum())return;
+    this.play(cell.index);
+  }
   private activeKey='';
   private saveKey='';
   constructor(){

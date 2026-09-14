@@ -1,0 +1,41 @@
+/* Short, interruptible motion; no animation controls game state or delays input. */
+@keyframes unloop-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes unloop-fade{from{opacity:0}to{opacity:1}}
+@keyframes unloop-dialog{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes unloop-pop{from{transform:scale(.85)}to{transform:scale(1)}}
+@keyframes unloop-line-x{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes unloop-line-y{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes unloop-hint{50%{filter:brightness(1.12)}}
+main :is(.home,.settings,.summary){animation:unloop-arrive 340ms cubic-bezier(.2,.7,.3,1) both}
+main .session,app-puzzle-board .puzzle-layout{animation:unloop-fade 240ms ease both}
+.shell-header{animation:unloop-fade 300ms ease}
+.home .game-grid>.game-card{animation:unloop-arrive 380ms cubic-bezier(.2,.7,.3,1) both}
+.home .game-grid>.game-card:nth-child(2){animation-delay:45ms}
+.home .game-grid>.game-card:nth-child(3){animation-delay:90ms}
+.home .game-grid>.game-card:nth-child(4){animation-delay:135ms}
+.overlay{animation:unloop-fade 160ms ease both}.overlay .modal{animation:unloop-dialog 260ms cubic-bezier(.2,.7,.3,1) both}
+.overlay .complete>span{animation:unloop-pop 320ms cubic-bezier(.2,.9,.3,1) both}
+.pwa-toast,.resume-card,app-puzzle-board .tip{animation:unloop-arrive 220ms ease both}
+.theme-toggle,.duration button,.choice-group button,app-puzzle-board .mark-tools button{transition:background-color 180ms ease,color 180ms ease,border-color 180ms ease,box-shadow 180ms ease}
+.shell-header nav a,.theme-toggle span{transition:color 180ms ease,transform 180ms ease}
+app-puzzle-board .grid button,app-puzzle-board .picross-cell{transition:background-color 130ms ease,box-shadow 150ms ease}
+app-puzzle-board .circuit svg{transition:stroke 180ms ease,fill 180ms ease;transform-origin:50% 50%}
+app-puzzle-board .trail .path.east{transform-origin:left center;animation:unloop-line-x 110ms ease-out}
+app-puzzle-board .trail .path.west{transform-origin:right center;animation:unloop-line-x 110ms ease-out}
+app-puzzle-board .trail .path.north{transform-origin:center bottom;animation:unloop-line-y 110ms ease-out}
+app-puzzle-board .trail .path.south{transform-origin:center top;animation:unloop-line-y 110ms ease-out}
+app-puzzle-board .visited .checkpoint,app-puzzle-board .head{animation:unloop-pop 160ms ease-out}
+app-puzzle-board .hinted{animation:unloop-hint 420ms ease-in-out 2}
+app-puzzle-board .clue{transition:color 160ms ease}
+app-puzzle-board .controls button,[tuiButton],.pwa-toast button{transition:transform 120ms ease,box-shadow 160ms ease,background-color 180ms ease}
+@media(hover:hover) and (pointer:fine){
+  app-puzzle-board .controls button:not(:disabled):hover,[tuiButton]:not(:disabled):hover{transform:translateY(-1px)}
+  .theme-toggle:hover span{transform:rotate(12deg)}
+}
+app-puzzle-board .controls button:not(:disabled):active,[tuiButton]:not(:disabled):active{transform:scale(.98)}
+/* Cover CSS and explicit device preferences; Web Animations observe both in the directive. */
+html.reduce-motion{scroll-behavior:auto}
+html.reduce-motion *,html.reduce-motion *::before,html.reduce-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}

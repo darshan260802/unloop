@@ -1,4 +1,4 @@
-<section class="puzzle-layout">
+<section class="puzzle-layout" [appMoveMotion]="session.roundKey()" motionKind="board">
   <div class="brief">
     <p class="eyebrow">{{spec().subtitle}}</p>
     <h2>{{spec().title}}</h2>
@@ -17,7 +17,7 @@
         </div>
         <div class="grid circuit" role="group" aria-label="Circuit network" [style.grid-template-columns]="'repeat('+puzzle().size+',minmax(0,1fr))'">
           @for(index of indices();track index){
-            <button type="button" [class.powered]="powered().has(index)" [class.hinted]="hinted()===index" [class.locked]="locks().has(index)" [attr.aria-label]="circuitLabel(index)" (click)="play(index)">
+            <button type="button" [appMoveMotion]="values()[index]" motionKind="wire" [motionDirection]="mode()" [class.powered]="powered().has(index)" [class.hinted]="hinted()===index" [class.locked]="locks().has(index)" [attr.aria-label]="circuitLabel(index)" (click)="play(index)">
               <svg viewBox="0 0 60 60" aria-hidden="true">
                 @if(hasPort(values()[index],1)){<path d="M30 30V0"/>}
                 @if(hasPort(values()[index],2)){<path d="M30 30H60"/>}
@@ -39,7 +39,7 @@
               <span class="bay-label">Bay {{bay+1}}</span>
               <span class="cargo-stack">
                 @for(slot of cargoSlots;track slot){
-                  <span class="crate" [attr.data-cargo]="values()[bay*4+slot]">
+                  <span class="crate" [appMoveMotion]="values()[bay*4+slot]" motionKind="crate" [attr.data-cargo]="values()[bay*4+slot]">
                     {{cargoSymbol(values()[bay*4+slot])}}
                   </span>
                 }
@@ -50,13 +50,14 @@
         </div>
       }
       @case('picross'){
+        <p class="gesture-tip">Choose a tool, then swipe across squares to paint</p>
         <div class="mark-tools" role="group" aria-label="Marking tool">
           <button type="button" [attr.aria-pressed]="mode()===1" (click)="mode.set(1)">■ Fill</button>
           <button type="button" [attr.aria-pressed]="mode()===0" (click)="mode.set(0)">× Empty</button>
           <button type="button" [attr.aria-pressed]="mode()===-1" (click)="mode.set(-1)">Erase</button>
         </div>
         <div class="picross-scroll">
-          <div class="picross-board" role="group" aria-label="Picross board with row and column clues">
+          <div appSwipeGrid [swipeDisabled]="inputDisabled()" (cellSwipe)="swipeCell($event)" class="picross-board" role="group" aria-label="Picross board with row and column clues">
             <span class="clue-corner" aria-hidden="true">↓ →</span>
             @for(col of rows();track col){
               <div class="clue column-clue" [class.matched]="lineMatched(col,true)" [attr.aria-label]="'Column '+(col+1)+' clue '+puzzle().clues[puzzle().size+col].join(', ')">
@@ -68,7 +69,7 @@
                 @for(clue of puzzle().clues[row];track $index){<b>{{clue}}</b>}
               </div>
               @for(col of rows();track col){
-                <button type="button" class="picross-cell" [class.filled]="values()[row*puzzle().size+col]===1" [class.marked-empty]="values()[row*puzzle().size+col]===0" [class.hinted]="hinted()===row*puzzle().size+col" [attr.aria-label]="'Row '+(row+1)+', column '+(col+1)+', '+markName(values()[row*puzzle().size+col])" (click)="play(row*puzzle().size+col)">
+                <button type="button" class="picross-cell" [class.filled]="values()[row*puzzle().size+col]===1" [class.marked-empty]="values()[row*puzzle().size+col]===0" [class.hinted]="hinted()===row*puzzle().size+col" [attr.aria-label]="'Row '+(row+1)+', column '+(col+1)+', '+markName(values()[row*puzzle().size+col])" [attr.data-cell]="row*puzzle().size+col" [appMoveMotion]="values()[row*puzzle().size+col]">
                   {{values()[row*puzzle().size+col]===0?'×':values()[row*puzzle().size+col]===1?'■':''}}
                 </button>
               }
@@ -77,9 +78,10 @@
         </div>
       }
       @case('trail'){
-        <div class="grid trail" role="group" aria-label="Number Trail board" [style.grid-template-columns]="'repeat('+puzzle().size+',minmax(0,1fr))'">
+        <p class="gesture-tip">Swipe from the endpoint to draw · slide back to undo · tapping works too</p>
+        <div appSwipeGrid [swipeDisabled]="inputDisabled()" (cellSwipe)="swipeCell($event)" class="grid trail" role="group" aria-label="Number Trail board" [style.grid-template-columns]="'repeat('+puzzle().size+',minmax(0,1fr))'">
           @for(index of indices();track index){
-            <button type="button" [class.visited]="values()[index]>0" [class.endpoint]="values()[index]===maximum()" [class.hinted]="hinted()===index" [attr.aria-label]="label(index)" (click)="play(index)">
+            <button type="button" [class.visited]="values()[index]>0" [class.endpoint]="values()[index]===maximum()" [class.hinted]="hinted()===index" [attr.data-cell]="index" [attr.aria-label]="label(index)">
               @if(edge(index,-puzzle().size)){<i class="path north"></i>}
               @if(edge(index,1)){<i class="path east"></i>}
               @if(edge(index,puzzle().size)){<i class="path south"></i>}
