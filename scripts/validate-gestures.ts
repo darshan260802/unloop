@@ -26,12 +26,23 @@ try{
       return{x:rect.x+rect.width/2,y:rect.y+rect.height/2};
     };
     const cdp=await context.newCDPSession(page);
+    await page.evaluate(()=>{
+      const events:unknown[]=[];(window as unknown as Record<string,unknown>)['gestureEvents']=events;
+      for(const type of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture'])document.addEventListener(type,event=>{
+        const pointer=event as PointerEvent;
+        events.push({type,x:pointer.clientX,y:pointer.clientY,primary:pointer.isPrimary,button:pointer.button,target:(pointer.target as Element)?.closest('[data-cell]')?.getAttribute('data-cell')});
+      },true);
+    });
     const touch=async(type:'touchStart'|'touchMove'|'touchEnd'|'touchCancel',index?:number)=>{
       const position=index===undefined?null:await point(index);
       await cdp.send('Input.dispatchTouchEvent',{type,touchPoints:position?[{...position,id:1,radiusX:3,radiusY:3}]:[]});
+      await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>resolve())));
     };
     await touch('touchStart',path[0]);for(const cell of path.slice(1,6))await touch('touchMove',cell);
-    assert(await board.locator('.visited').count()===6,'Touch drawing did not reach six cells');
+    if(await board.locator('.visited').count()!==6){
+      console.log(JSON.stringify({id,path,errors,debug:await page.evaluate(()=>({events:(window as unknown as Record<string,unknown>)['gestureEvents'],message:document.querySelector('.message')?.textContent,visited:Array.from(document.querySelectorAll('.trail .visited')).map(cell=>cell.getAttribute('data-cell')),drawing:document.querySelector('.trail')?.className,session:localStorage.getItem('unloop:data:v1')}))}));
+      throw new Error('Touch drawing did not reach six cells');
+    }
     await touch('touchMove',path[4]);await touch('touchMove',path[3]);await touch('touchEnd');
     assert(await board.locator('.visited').count()===4,'Swipe rewind or synthetic-click suppression failed');
     await touch('touchStart',path[3]);await touch('touchCancel');
@@ -55,6 +66,7 @@ try{
     await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:first.x+first.width/2,y:first.y+first.height/2,id:1}]});
     await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:last.x+last.width/2,y:last.y+last.height/2,id:1}]});
     await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>resolve())));
     assert(await picross.locator('.filled').count()===5,'Picross swipe paint or click suppression failed');
     await picross.locator('[data-cell="0"]').focus();await page.keyboard.press('Space');
     assert(await picross.locator('.filled').count()===4,'Picross keyboard toggle failed');
