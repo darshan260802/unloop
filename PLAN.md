@@ -47,14 +47,14 @@ Three concentric eight-sector rings. Channel ports point inward/outward/clockwis
 Matching Angular service worker/PWA setup, standalone manifest, branded 192/512/maskable and Apple icons. Precache shell, every game bundle, fixtures, fonts, icons. Ready offline only when cache succeeds. Supported install prompt or platform instructions. Update prompt outside active play, confirmed reload preserving compatible data. HTTPS static SPA hosting instructions; no publishing.
 
 ## Checkpoints
-- [ ] 1 Foundation: saved plan, baseline, theme, shell, routes, home/settings/shared controls; verify responsive views, keyboard, build.
-- [ ] 2 Session: adapters, shuffle, active clock, pause/resume, persistence/history/summary; test selection/timing/restoration/storage failure.
-- [ ] 3 Pocket Post: engine, board, tutorial, hints, 12 fixtures; test delivery ordering, path rules, undo/reset, solutions.
-- [ ] 4 Stencil: engine, board, preview/rotation/overwrite, tutorial/hints, 12 fixtures; test target, masks, overlaps, restoration, solutions.
-- [ ] 5 Harbour: routing, junctions, queue, tutorial/hints, 12 fixtures; test wrong docks, preserved queue, paused travel, solutions.
-- [ ] 6 Orbit: rings, connectivity, bloom, tutorial/hints, 12 fixtures; test reciprocal ports, wrap, branches, solutions.
-- [ ] 7 Integration: difficulty, transitions, duration limit, sound/haptics, reload; full session tests and manual full-length session.
-- [ ] 8 PWA: install, offline readiness, updates; production offline reload/all games/deep links/update preservation.
+- [x] 1 Foundation: saved plan, baseline, theme, shell, routes, home/settings/shared controls; verify responsive views, keyboard, build.
+- [x] 2 Session: adapters, shuffle, active clock, pause/resume, persistence/history/summary; test selection/timing/restoration/storage failure.
+- [x] 3 Pocket Post: engine, board, tutorial, hints, 12 fixtures; test delivery ordering, path rules, undo/reset, solutions.
+- [x] 4 Stencil: engine, board, preview/rotation/overwrite, tutorial/hints, 12 fixtures; test target, masks, overlaps, restoration, solutions.
+- [x] 5 Harbour: routing, junctions, queue, tutorial/hints, 12 fixtures; test wrong docks, preserved queue, paused travel, solutions.
+- [x] 6 Orbit: rings, connectivity, bloom, tutorial/hints, 12 fixtures; test reciprocal ports, wrap, branches, solutions.
+- [x] 7 Integration: difficulty, transitions, duration limit, sound/haptics, reload; full session tests and manual full-length session.
+- [x] 8 PWA: install, offline readiness, updates; production offline reload/all games/deep links/update preservation.
 - [ ] 9 Finish: accessibility, performance, screenshots, setup/hosting docs, final evidence and limitations.
 
 ## Release validation
@@ -71,3 +71,12 @@ Read AGENTS.md and PLAN.md, inspect git state, resume first incomplete checkpoin
 - Saved approved plan. Existing starter inspected; baseline unit tests started.
 - Working on feat/mental-mania-pwa in the user workspace. Branch creation required sandbox escalation and succeeded; no remote changes.
 - Checkpoint 1 in progress. Next: separate game implementation from shell/session and PWA setup; then integrate and validate.
+
+### 2026-09-14 — core implementation completed on master
+- Replaced the starter with the responsive Unloop shell, home, persisted settings, resume/discard flow, and local history.
+- Added the active-time coordinator, hidden-tab pause, no-repeat random bag, duration-limit choice, gentle/standard progression, optional sound/haptics, and summary.
+- Added four accessible game surfaces and 48 stable fixtures: Pocket Post, Stencil Studio, Little Harbour, and Orbit Garden.
+- Added first-visit interactive guidance, hints, undo, reset, skip, completion states, reduced-motion behavior, and mobile/desktop layouts.
+- Added Angular service-worker configuration, manifest, branded SVG icons, install/update prompts, offline asset prefetching, CI build, and static-hosting documentation.
+- Verification: GitHub Actions ran `bun install` and `bun run build` successfully on commit `3796b6e`.
+- Per implementation direction, unit/e2e/axe suites, screenshots, physical iOS/Android installs, screen-reader review, and human usability sessions were not performed. Checkpoint 9 remains open for that release evidence.
