@@ -1,11 +1,26 @@
 <section class="game-layout">
-  <div class="instructions"><p class="eyebrow">Stencil Studio · {{fixture().difficulty}}</p><h2>Layer the postcard.</h2><p>Match the small target by choosing a stencil, turning it, and applying its colored pattern. New ink paints over old ink.</p>
-    <div class="target-wrap"><span>Target postcard</span><div class="target" role="img" aria-label="Target postcard pattern">@for(index of indices;track index){<i [class]="fixture().target[index]"></i>}</div></div>
+  <div class="instructions">
+    <div class="game-label"><span aria-hidden="true">✦</span><p>Stencil Studio <small>{{fixture().difficulty}}</small></p></div>
+    <h2>Build the target, one layer at a time.</h2>
+    <p>Choose a stencil, rotate it, preview the highlighted cells, then apply. A new layer paints over anything beneath it.</p>
+    <div class="tool-list" role="group" aria-label="Choose a stencil">
+      @for(tool of fixture().tools;track tool.id;let toolIndex=$index){
+        <button type="button" [class.selected]="state().selected===toolIndex" [attr.aria-pressed]="state().selected===toolIndex" (click)="select(toolIndex)">
+          <span class="swatch" [attr.data-ink]="tool.ink">{{glyph(tool.ink)}}</span>
+          <span class="tool-copy"><b>{{tool.name}}</b><small>{{tool.mask.length}} painted cells</small></span>
+          <span class="mini-mask" aria-hidden="true">@for(index of indices;track index){<i [class.filled]="toolCovers(toolIndex,index)"></i>}</span>
+        </button>
+      }
+    </div>
   </div>
   <div class="play-area">
-    <div class="canvas" role="img" aria-label="Your postcard canvas">@for(index of indices;track index){<i [class]="state().canvas[index]" [class.preview]="preview().includes(index)"></i>}</div>
-    <div class="tools" role="group" aria-label="Stencil tools">@for(tool of fixture().tools;track tool.id;let index=$index){<button type="button" [class.selected]="state().selected===index" [attr.aria-pressed]="state().selected===index" (click)="select(index)"><span [class]="tool.ink"></span>{{tool.name}}</button>}</div>
+    <div class="cards">
+      <figure><figcaption><b>Target card</b><span>Match every symbol</span></figcaption><div class="postcard target" role="img" aria-label="Target postcard">@for(index of indices;track index){<i [attr.data-ink]="fixture().target[index]" [attr.aria-label]="inkName(fixture().target[index]!)"><span aria-hidden="true">{{glyph(fixture().target[index]!)}}</span></i>}</div></figure>
+      <figure><figcaption><b>Your card</b><span>{{state().actions.length}} layers applied</span></figcaption><div class="postcard canvas" role="img" aria-label="Current postcard with stencil preview">@for(index of indices;track index){<i [attr.data-ink]="state().canvas[index]"><span aria-hidden="true">{{glyph(state().canvas[index]!)}}</span>@if(preview().includes(index)){<em class="preview-layer" [attr.data-ink]="selectedTool().ink" aria-hidden="true">{{glyph(selectedTool().ink)}}</em>}</i>}</div></figure>
+    </div>
+    <div class="rotation"><button type="button" (click)="turn(-1)" aria-label="Rotate stencil left">↶</button><div><b>{{selectedTool().name}}</b><span>{{state().rotation*90}}° preview</span></div><button type="button" (click)="turn(1)" aria-label="Rotate stencil right">↷</button></div>
     <p class="message" aria-live="polite">{{state().message}}</p>
-    <div class="actions"><button tuiButton appearance="secondary" type="button" (click)="rotate()">Rotate 90°</button><button tuiButton type="button" (click)="apply()" [disabled]="state().solved">Apply</button><button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().history.length===0">Undo</button><button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button><button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button></div>
+    @if(guidedReset()){<button class="guided" type="button" (click)="useGuidedReset()">Reset and show the guided first layer</button>}
+    <div class="actions"><button tuiButton type="button" (click)="apply()" [disabled]="state().solved">Apply layer</button><button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().history.length===0">Undo</button><button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button><button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button></div>
   </div>
 </section>
