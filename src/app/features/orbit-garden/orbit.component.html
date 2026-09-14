@@ -1,14 +1,34 @@
 <section class="game-layout">
-  <div class="instructions"><p class="eyebrow">Orbit Garden · {{fixture().difficulty}}</p><h2>Let the water find the flowers.</h2><p>Turn each ring until its little channel ports meet. When all three paths agree, water flows from the center to the garden edge.</p>
-    <div class="ring-pickers" role="group" aria-label="Select a garden ring">@for(ring of [0,1,2];track ring){<button type="button" [class.selected]="state().selected===ring" [attr.aria-pressed]="state().selected===ring" (click)="select(ring)">Ring {{ring+1}} <span>{{watered()[ring]?'connected':'open'}}</span></button>}</div>
+  <div class="instructions">
+    <div class="game-label"><span aria-hidden="true">◎</span><p>Orbit Garden <small>{{fixture().difficulty}}</small></p></div>
+    <h2>Move each drop onto its flower.</h2>
+    <p>Every ring has eight positions. Select a ring and turn it left or right until the water drop and flower share one sector.</p>
+    <div class="ring-progress" aria-label="Ring alignment progress">
+      @for(name of ringNames;track name;let ring=$index){<button type="button" [class.selected]="state().selected===ring" [class.aligned]="aligned()[ring]" [attr.aria-pressed]="state().selected===ring" (click)="select(ring)"><span>{{ring+1}}</span><p><b>{{name}}</b><small>{{status(ring)}}</small></p><i aria-hidden="true">{{aligned()[ring]?'✓':'→'}}</i></button>}
+    </div>
   </div>
   <div class="play-area">
-    <div class="garden" role="img" [attr.aria-label]="state().solved?'Orbit garden fully watered':'Orbit garden with '+connectedCount()+' of 3 rings connected'">
-      @for(ring of [2,1,0];track ring){<div class="ring ring-{{ring}}" [class.connected]="watered()[ring]" [class.selected]="state().selected===ring" [style.transform]="transform(ring)">@for(sector of sectors;track sector){@if(fixture().channels[ring]!.includes(sector)){<i [style.transform]="sectorTransform(sector)"></i>}}</div>}
-      <div class="source" aria-hidden="true">💧</div>
-      @for(flower of fixture().flowers;track flower){<span class="flower" [style.transform]="'rotate('+flower*45+'deg) translateY(-9.6rem) rotate('+(-flower*45)+'deg)'">✿</span>}
+    <div class="orbit-board" [class.solved]="solved()" role="img" [attr.aria-label]="alignedCount()+' of 3 garden rings aligned'">
+      <header><span><i aria-hidden="true">💧</i> movable water gate</span><span><i aria-hidden="true">✿</i> flower target</span></header>
+      @for(name of ringNames;track name;let ring=$index){
+        <div class="ring-track" [class.selected]="state().selected===ring" [class.aligned]="aligned()[ring]">
+          <div class="track-label"><b>{{name}}</b><span>{{directions[state().offsets[ring]!]}} → {{directions[fixture().target[ring]!]}}</span></div>
+          <div class="sectors">
+            @for(sector of sectors;track sector){
+              <span [class.gate]="isGate(ring,sector)" [class.goal]="isGoal(ring,sector)" [class.matched]="isGate(ring,sector)&&isGoal(ring,sector)">
+                <small>{{directions[sector]}}</small>
+                @if(isGate(ring,sector)&&isGoal(ring,sector)){<b aria-hidden="true">✿</b>}
+                @else if(isGate(ring,sector)){<b aria-hidden="true">💧</b>}
+                @else if(isGoal(ring,sector)){<b aria-hidden="true">✿</b>}
+              </span>
+            }
+          </div>
+        </div>
+      }
+      <div class="water-line" [style.width.%]="alignedCount()*33.333" aria-hidden="true"></div>
     </div>
+    <div class="turner" aria-label="Rotate selected ring"><button type="button" [class.hinted]="hintedDirection()===-1" (click)="rotate(-1)" aria-label="Move selected ring one sector left">← <b>Left</b></button><div><span>Selected</span><b>{{ringNames[state().selected]}}</b></div><button type="button" [class.hinted]="hintedDirection()===1" (click)="rotate(1)" aria-label="Move selected ring one sector right"><b>Right</b> →</button></div>
     <p class="message" aria-live="polite">{{state().message}}</p>
-    <div class="actions"><button tuiButton appearance="secondary" type="button" (click)="rotate(-1)" aria-label="Rotate selected ring counterclockwise">↶ Left</button><button tuiButton type="button" (click)="rotate(1)" aria-label="Rotate selected ring clockwise">Right ↷</button><button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().history.length===0">Undo</button><button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button><button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button></div>
+    <div class="actions"><button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().history.length===0">Undo</button><button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button><button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button></div>
   </div>
 </section>
