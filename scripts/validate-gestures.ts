@@ -14,6 +14,10 @@ try{
     const context=await browser.newContext({viewport:{width,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
     const page=await context.newPage(),errors:string[]=[];
     page.on('pageerror',error=>errors.push(error.message));
+    const expectCount=async(selector:string,count:number,message:string):Promise<void>=>{
+      try{await page.waitForFunction(({selector,count})=>document.querySelectorAll(selector).length===count,{selector,count},{timeout:2500})}
+      catch{throw new Error(message+'; '+JSON.stringify(await page.evaluate(selector=>({count:document.querySelectorAll(selector).length,message:document.querySelector('.message')?.textContent}),selector)))}
+    };
     await page.goto(server.url+'play?game=pocket-post');
     await page.getByRole('button',{name:'Start puzzle',exact:true}).click();
     const board=page.locator('.trail');await board.waitFor();await board.scrollIntoViewIfNeeded();
@@ -39,15 +43,12 @@ try{
       await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>resolve())));
     };
     await touch('touchStart',path[0]);for(const cell of path.slice(1,6))await touch('touchMove',cell);
-    if(await board.locator('.visited').count()!==6){
-      console.log(JSON.stringify({id,path,errors,debug:await page.evaluate(()=>({events:(window as unknown as Record<string,unknown>)['gestureEvents'],message:document.querySelector('.message')?.textContent,visited:Array.from(document.querySelectorAll('.trail .visited')).map(cell=>cell.getAttribute('data-cell')),drawing:document.querySelector('.trail')?.className,session:localStorage.getItem('unloop:data:v1')}))}));
-      throw new Error('Touch drawing did not reach six cells');
-    }
+    await expectCount('.trail .visited',6,'Touch drawing did not reach six cells');
     await touch('touchMove',path[4]);await touch('touchMove',path[3]);await touch('touchEnd');
-    assert(await board.locator('.visited').count()===4,'Swipe rewind or synthetic-click suppression failed');
+    await expectCount('.trail .visited',4,'Swipe rewind or synthetic-click suppression failed');
     await touch('touchStart',path[3]);await touch('touchCancel');
     await board.locator('[data-cell="'+path[4]+'"]').focus();await page.keyboard.press('Enter');
-    assert(await board.locator('.visited').count()===5,'Keyboard fallback failed after pointer cancellation');
+    await expectCount('.trail .visited',5,'Keyboard fallback failed after pointer cancellation');
     await touch('touchStart',path[4]);
     // Send only turning points. Straight runs must fill intermediate cells even with sparse events.
     for(let step=5;step<path.length;step++){
@@ -56,7 +57,7 @@ try{
     }
     await touch('touchEnd');
     await page.getByRole('heading',{name:'Nicely noticed.'}).waitFor();
-    assert(await board.locator('.visited').count()===path.length,'Fast swipe skipped a square');
+    await expectCount('.trail .visited',path.length,'Fast swipe skipped a square');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'Horizontal page overflow');
     await page.getByRole('button',{name:'Finish break',exact:true}).last().click();
     await page.goto(server.url+'play?game=stencil-studio');
@@ -67,9 +68,9 @@ try{
     await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:last.x+last.width/2,y:last.y+last.height/2,id:1}]});
     await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
     await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>resolve())));
-    assert(await picross.locator('.filled').count()===5,'Picross swipe paint or click suppression failed');
+    await expectCount('.picross-board .filled',5,'Picross swipe paint or click suppression failed');
     await picross.locator('[data-cell="0"]').focus();await page.keyboard.press('Space');
-    assert(await picross.locator('.filled').count()===4,'Picross keyboard toggle failed');
+    await expectCount('.picross-board .filled',4,'Picross keyboard toggle failed');
     await page.emulateMedia({reducedMotion:'reduce'});
     await picross.locator('[data-cell="0"]').tap();
     assert(await picross.locator('[data-cell="0"]').evaluate(element=>element.getAnimations().filter(animation=>animation.playState==='running').length)===0,'Reduced motion did not suppress gameplay animation');
