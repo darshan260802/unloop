@@ -1,15 +1,27 @@
 <section class="game-layout">
-  <div class="instructions"><p class="eyebrow">Little Harbour · {{fixture().difficulty}}</p><h2>Guide each boat home.</h2><p>Set the channel junctions, then launch the first boat in the queue. A wrong boat simply sails back to the front.</p>
-    <div class="queue" aria-label="Boat queue">@for(boat of state().queue;track boat.id){<span [attr.aria-label]="'Boat for '+boat.dock+' dock'">⛵<b>{{boat.symbol}}</b></span>}@empty{<span>All delivered</span>}</div>
+  <div class="instructions">
+    <div class="game-label"><span aria-hidden="true">≈</span><p>Little Harbour <small>{{fixture().difficulty}}</small></p></div>
+    <h2>Match the boat to its dock.</h2>
+    <p>Each junction changes the route. Turn them until the live destination matches the symbol on the first boat, then launch.</p>
+    <div class="queue-wrap"><div><b>Waiting boats</b><span>{{state().queue.length}} left</span></div><div class="queue" aria-label="Boat queue">@for(boat of state().queue;track boat.id){<span [class.active]="$first" [attr.aria-label]="($first?'Current ':'')+'boat for '+boat.dock+' dock'">⛵<b>{{boat.symbol}}</b></span>}@empty{<em>All delivered</em>}</div></div>
+    <div class="delivered-list"><b>Safely docked</b><div>@for(boat of state().delivered;track boat.id){<span aria-label="Delivered boat">✓ {{boat.symbol}}</span>}@empty{<small>None yet</small>}</div></div>
   </div>
   <div class="play-area">
-    <div class="harbour" role="img" aria-label="Harbour channel map">
-      <div class="sea"></div><div class="channel channel-a"></div><div class="channel channel-b"></div>
-      <div class="junctions" role="group" aria-label="Channel junctions">@for(turn of state().junctions;track $index){<button type="button" [class.right]="turn" [attr.aria-label]="'Junction '+($index+1)+', turning '+(turn?'right':'left')" (click)="toggle($index)"><span aria-hidden="true">⌁</span><small>{{$index+1}}</small></button>}</div>
-      <div class="docks">@for(dock of fixture().docks;track dock){<span>⌂ <b>{{dock}}</b></span>}</div>
-      <div class="delivered">@for(boat of state().delivered;track boat.id){<span aria-hidden="true">⛵{{boat.symbol}}</span>}</div>
+    <div class="route-card" [class.ready]="routeReady()">
+      @if(currentBoat();as boat){<div class="current-boat"><span aria-hidden="true">⛵</span><p><small>Current boat</small><b>Needs {{boat.symbol}} dock</b></p></div>}
+      <div class="route-arrow" aria-hidden="true">→</div>
+      <div class="destination"><small>Current route</small><b>{{destination()}} dock</b><span>{{routeReady()?'Ready to launch':'Keep turning'}}</span></div>
+    </div>
+    <div class="harbour" aria-label="Harbour route controls">
+      <div class="channel" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="junctions" role="group" aria-label="Set route junctions">
+        @for(turn of state().junctions;track $index){
+          <button type="button" [class.right]="turn" [attr.aria-label]="'Junction '+($index+1)+', sends boat '+(turn?'right':'left')" [attr.aria-pressed]="turn" (click)="toggle($index)"><small>J{{$index+1}}</small><span aria-hidden="true">{{turn?'↗':'↖'}}</span><b>{{turn?'Right':'Left'}}</b></button>
+        }
+      </div>
+      <div class="docks">@for(dock of fixture().docks;track dock){<span [class.active]="destination()===dock" [class.needed]="currentBoat()?.dock===dock"><i aria-hidden="true">⌂</i><b>{{dock}}</b><small>{{currentBoat()?.dock===dock?'needed dock':'dock'}}</small></span>}</div>
     </div>
     <p class="message" aria-live="polite">{{state().message}}</p>
-    <div class="actions"><button tuiButton type="button" (click)="launch()" [disabled]="state().solved">Launch next</button><button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().history.length===0">Undo delivery</button><button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button><button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button></div>
+    <div class="actions"><button tuiButton type="button" (click)="launch()" [disabled]="state().solved">Launch boat</button><button tuiButton appearance="secondary" type="button" (click)="undo()" [disabled]="state().history.length===0">Undo delivery</button><button tuiButton appearance="secondary" type="button" (click)="reset()">Reset</button><button tuiButton appearance="flat" type="button" (click)="hint()">Hint</button></div>
   </div>
 </section>
